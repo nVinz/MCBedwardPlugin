@@ -7,7 +7,7 @@ import java.util.ListIterator;
 
 public class Stage{
 
-    VnizCore plugin;
+    private VnizCore plugin;
     public Stage(VnizCore pl){
         plugin = pl;
     }
@@ -17,10 +17,11 @@ public class Stage{
     }
 
     public void inGame(){
-        ListIterator<Team> teamsIt = plugin.teams.listIterator();
+        /*ListIterator<Team> teamsIt = plugin.teams.listIterator();
         while (teamsIt.hasNext()){
             teamsIt.next().tpAllToSpawn();
-        }
+        }*/
+        plugin.teams.forEach((n) -> n.tpAllToSpawn());
     }
 
 

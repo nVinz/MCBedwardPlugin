@@ -1,7 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="66ae2ccd-7329-4afc-9a21-104b0dc071c0" name="Default Changelist" comment="" />
+    <list default="true" id="66ae2ccd-7329-4afc-9a21-104b0dc071c0" name="Default Changelist" comment="v1.2">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/my/nvinz/core/vnizcore/Menu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/my/nvinz/core/vnizcore/ChatEvents.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/my/nvinz/core/vnizcore/Events.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/my/nvinz/core/vnizcore/Commands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/my/nvinz/core/vnizcore/Commands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/my/nvinz/core/vnizcore/Stage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/my/nvinz/core/vnizcore/Stage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/my/nvinz/core/vnizcore/Team.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/my/nvinz/core/vnizcore/Team.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/my/nvinz/core/vnizcore/VnizCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/my/nvinz/core/vnizcore/VnizCore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/my/nvinz/core/vnizcore/ChatEvents.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/my/nvinz/core/vnizcore/Commands.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/my/nvinz/core/vnizcore/Commands.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/my/nvinz/core/vnizcore/Stage$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/my/nvinz/core/vnizcore/Stage$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/my/nvinz/core/vnizcore/Stage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/my/nvinz/core/vnizcore/Stage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/my/nvinz/core/vnizcore/Team.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/my/nvinz/core/vnizcore/Team.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/my/nvinz/core/vnizcore/VnizCore.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/my/nvinz/core/vnizcore/VnizCore.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/plugin.yml" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,6 +34,9 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="MavenImportPreferences">
     <option name="importingSettings">
       <MavenImportingSettings>
@@ -25,7 +47,9 @@
     </option>
   </component>
   <component name="ProjectId" id="1P9TSYCBP9r2xJcbOL1E5b6lVHl" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="D:/Minecraft/Dev/TestingServer 1.13.2/spigot-1.13.2.jar" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.0" />
@@ -94,5 +118,22 @@
       <updated>1565285312829</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="v1.2" />
+    <option name="LAST_COMMIT_MESSAGE" value="v1.2" />
   </component>
 </project>

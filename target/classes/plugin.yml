@@ -4,3 +4,8 @@ main: my.nvinz.core.vnizcore.VnizCore
 api-version: 1.13
 authors: [nVinz]
 description: Core Server Plugin
+commands:
+  start:
+    description: Start game
+  cmd:
+    description: Show teams

@@ -12,35 +12,54 @@ import java.util.StringTokenizer;
 public class Team {
 
     public String teamColor;
-    public int spawnPositionX, spawnPositionY, spawnPositionZ;
-    public List<Player> players = new ArrayList<Player>();
+    public double spawnPositionX, spawnPositionY, spawnPositionZ;
+    public List<Player> players;
+    public int playersMax, playersCurr;
 
-    public Team(String color){
+    public Team(String color, int playersMax_) {
         teamColor = color;
+        playersMax = playersMax_;
+        playersCurr = 0;
+
+        players = new ArrayList<>();
     }
 
     public void tpAllToSpawn(){
-        ListIterator<Player> players_ = players.listIterator();
-        while (players_.hasNext()){
-            players_.next().teleport(new Location(players_.next().getWorld(),spawnPositionX, spawnPositionY, spawnPositionZ));
-        }
+        /*ListIterator<Player> playersIt = players.listIterator();
+        while (playersIt.hasNext()){
+            playersIt.next().sendMessage("Teleporting...");
+            //players_.next().teleport(new Location(players_.next().getWorld(),spawnPositionX, spawnPositionY, spawnPositionZ));
+        }*/
+        players.forEach((n) -> n.sendMessage("Teleporting..."));
+        players.forEach((n) -> n.teleport(new Location(n.getWorld(),spawnPositionX, spawnPositionY, spawnPositionZ)));
     }
 
     public void tpToSpawn(Player player){
         player.teleport(new Location(player.getWorld(),spawnPositionX, spawnPositionY, spawnPositionZ));
     }
 
+    public boolean isFull(){
+        if (playersCurr < playersMax) { return false; }
+        else { return true; }
+    }
+
     public void addPlayer(Player player){
         players.add(player);
+        playersCurr++;
+    }
+
+    public void removePlayer(Player player){
+        players.remove(player);
+        playersCurr--;
     }
 
     public void setSpawnPositions(String positions){
         String spawnPosition = positions.replace(',',' ');
         StringTokenizer st = new StringTokenizer(spawnPosition);
         while (st.hasMoreTokens()) {
-            spawnPositionX = Integer.parseInt(st.nextToken());
-            spawnPositionY = Integer.parseInt(st.nextToken());
-            spawnPositionZ = Integer.parseInt(st.nextToken());
+            spawnPositionX = Double.valueOf(st.nextToken());
+            spawnPositionY = Double.valueOf(st.nextToken());
+            spawnPositionZ = Double.valueOf(st.nextToken());
         }
     }
 }
