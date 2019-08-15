@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< Updated upstream
     <list default="true" id="66ae2ccd-7329-4afc-9a21-104b0dc071c0" name="Default Changelist" comment="v1.2">
       <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/my/nvinz/core/vnizcore/Menu.java" afterDir="false" />
@@ -20,6 +21,12 @@
       <change beforePath="$PROJECT_DIR$/target/classes/my/nvinz/core/vnizcore/Team.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/my/nvinz/core/vnizcore/Team.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/my/nvinz/core/vnizcore/VnizCore.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/my/nvinz/core/vnizcore/VnizCore.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/plugin.yml" afterDir="false" />
+=======
+    <list default="true" id="66ae2ccd-7329-4afc-9a21-104b0dc071c0" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+>>>>>>> Stashed changes
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -50,7 +57,11 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+<<<<<<< Updated upstream
     <property name="last_opened_file_path" value="D:/Minecraft/Dev/TestingServer 1.13.2/spigot-1.13.2.jar" />
+=======
+    <property name="last_opened_file_path" value="$USER_HOME$/Documents/Minecraft/Server/spigot-1.13.2.jar" />
+>>>>>>> Stashed changes
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.32794118" />
@@ -69,8 +80,8 @@
   </component>
   <component name="RunManager" selected="JAR Application.Spigot Server">
     <configuration name="Spigot Server" type="JarApplication">
-      <option name="JAR_PATH" value="D:/Minecraft/Dev/TestingServer 1.13.2/spigot-1.13.2.jar" />
-      <option name="WORKING_DIRECTORY" value="D:\Minecraft\Dev\TestingServer 1.13.2" />
+      <option name="JAR_PATH" value="$USER_HOME$/Documents/Minecraft/Server/spigot-1.13.2.jar" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\user\Documents\Minecraft\Server" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <module name="VnizCore" />
       <method v="2" />
@@ -124,16 +135,23 @@
       <map>
         <entry key="MAIN">
           <value>
+<<<<<<< Updated upstream
             <State>
               <option name="COLUMN_ORDER" />
             </State>
+=======
+            <State />
+>>>>>>> Stashed changes
           </value>
         </entry>
       </map>
     </option>
   </component>
+<<<<<<< Updated upstream
   <component name="VcsManagerConfiguration">
     <MESSAGE value="v1.2" />
     <option name="LAST_COMMIT_MESSAGE" value="v1.2" />
   </component>
+=======
+>>>>>>> Stashed changes
 </project>

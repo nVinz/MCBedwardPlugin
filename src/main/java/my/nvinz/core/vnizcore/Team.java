@@ -25,17 +25,20 @@ public class Team {
     }
 
     public void tpAllToSpawn(){
-        /*ListIterator<Player> playersIt = players.listIterator();
-        while (playersIt.hasNext()){
-            playersIt.next().sendMessage("Teleporting...");
-            //players_.next().teleport(new Location(players_.next().getWorld(),spawnPositionX, spawnPositionY, spawnPositionZ));
-        }*/
         players.forEach((n) -> n.sendMessage("Teleporting..."));
         players.forEach((n) -> n.teleport(new Location(n.getWorld(),spawnPositionX, spawnPositionY, spawnPositionZ)));
     }
 
     public void tpToSpawn(Player player){
         player.teleport(new Location(player.getWorld(),spawnPositionX, spawnPositionY, spawnPositionZ));
+    }
+
+    public void clearAllInventory(){
+        players.forEach((p) -> p.getInventory().clear());
+    }
+
+    public void clearInventory(Player player){
+        player.getInventory().clear();
     }
 
     public boolean isFull(){

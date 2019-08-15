@@ -21,9 +21,11 @@ public class Stage{
         while (teamsIt.hasNext()){
             teamsIt.next().tpAllToSpawn();
         }*/
-        plugin.teams.forEach((n) -> n.tpAllToSpawn());
+        plugin.teams.forEach((n) -> {
+            n.tpAllToSpawn();
+            n.clearAllInventory();
+        });
     }
-
 
     public void startCountdown(){
         int countdownSeconds = 10;
