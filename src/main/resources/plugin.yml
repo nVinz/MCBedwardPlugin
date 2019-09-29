@@ -5,7 +5,13 @@ api-version: 1.13
 authors: [nVinz]
 description: Core Server Plugin
 commands:
+  none:
+    description: leave team
+  teams:
+    description: show teams
   start:
-    description: Start game
-  cmd:
-    description: Show teams
+    description: start game
+  test:
+    description: test command
+  jointeam:
+    description: choose team

@@ -2,10 +2,10 @@ teams: 2
 max-players: 2
 team-players: 1
 team-spawns:
-  - 0, 64, 0 #Blue
-  - 0, 46, 0 #Red
-  - 0, 64, 0 #Yellow
-  - 0, 64, 0 #Green
+  - 0, 0, 0
+  - 0, 0, 0
+  - 0, 0, 0
+  - 0, 0, 0
 banned-words-enabled: true
 banned-words:
   - пидор
