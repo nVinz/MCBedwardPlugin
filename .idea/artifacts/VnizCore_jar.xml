@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="VnizCore:jar">
-    <output-path>D:/Minecraft/Dev/TestingServer 1.13.2/plugins</output-path>
-    <root id="archive" name="VnizCore.jar">
-      <element id="module-output" name="VnizCore" />
-    </root>
-  </artifact>
-</component>
