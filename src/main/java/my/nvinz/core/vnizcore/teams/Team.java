@@ -21,13 +21,10 @@ public class Team {
     public Team(String color, String teamName, ChatColor chatColor_, String spawnPoint){
         chatColor = chatColor_;
         teamColor = color;
+        setSpawnPositions(spawnPoint);
     }
 
     public void tpAllToSpawn(){
-        /*ListIterator<Player> players_ = players.listIterator();
-        while (players_.hasNext()){
-            players_.next().teleport(new Location(players_.next().getWorld(),spawnPositionX, spawnPositionY, spawnPositionZ));
-        }*/
         players.forEach(player -> player.teleport(new Location(player.getWorld(),spawnPositionX, spawnPositionY, spawnPositionZ)));
     }
 

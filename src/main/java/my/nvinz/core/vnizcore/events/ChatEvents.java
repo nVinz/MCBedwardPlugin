@@ -46,19 +46,6 @@ public class ChatEvents implements Listener {
         }
 
     }
-    /*    String joinMessage = "";
-        Player player = event.getPlayer();
-        if (player.isOp()){
-            joinMessage = ChatColor. GREEN+"> " + ChatColor.WHITE+player.getDisplayName() + ChatColor.GREEN+" зашел на сервер.";
-        }
-        event.setJoinMessage(joinMessage);
-
-        if (!player.hasPlayedBefore()){
-            for (Player players: plugin.getServer().getOnlinePlayers()){
-                players.sendMessage(ChatColor. GREEN+"> " + ChatColor.WHITE+player.getDisplayName() + ChatColor.GREEN+" первый раз зашел на сервер!");
-            }
-        }
-    }*/
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event){

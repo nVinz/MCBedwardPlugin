@@ -2,9 +2,7 @@ package my.nvinz.core.vnizcore.events;
 
 import my.nvinz.core.vnizcore.VnizCore;
 import my.nvinz.core.vnizcore.game.Stage;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;

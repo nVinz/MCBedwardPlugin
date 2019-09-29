@@ -35,55 +35,9 @@ public final class VnizCore extends JavaPlugin {
         this.getConfig().options().copyDefaults(true);
         this.saveConfig();
 
-        /*if (this.getConfig().getInt("teams") *
-                this.getConfig().getInt("team-players") !=
-                this.getConfig().getInt("max-players")){
-            getServer().getConsoleSender().sendMessage("ERROR! Teams and players are not matching!");
-        }
-
-        switch (this.getConfig().getInt("teams")){
-            case 2:
-                blueTeam = new Team("Синие");
-                redTeam = new Team("Красные");
-                teams.add(blueTeam);
-                teams.add(redTeam);
-                break;
-            case 4:
-                blueTeam = new Team("Синие");
-                redTeam = new Team("Красные");
-                yellowTeam = new Team("Желтые");
-                greenTeam = new Team("Зеленые");
-                teams.add(blueTeam);
-                teams.add(redTeam);
-                teams.add(yellowTeam);
-                teams.add(greenTeam);
-                break;
-        }*/
-
-        /*List<String> spawnPositions = this.getConfig().getStringList("team-spawns");
-        ListIterator<String> spawnPositionsIt = spawnPositions.listIterator();
-        ListIterator<Team> teamsIt = teams.listIterator();
-        while (spawnPositionsIt.hasNext()) {
-            teamsIt.next().setSpawnPositions(spawnPositionsIt.next());
-        }*/
+        parseTeams(this);
 
         status = Stage.Status.LOBBY;
-
-        Map<String, Object> teams_cfg = this.getConfig().getConfigurationSection("teams2").getValues(false);
-        teams_cfg.forEach( (team_cfg, obj) -> {
-            String teamName = this.getConfig().getString("teams2."+team_cfg+".name");
-            String spawnPoint = this.getConfig().getString("teams2."+team_cfg+".spawn");
-
-            this.getServer().getConsoleSender().sendMessage("Building team with parameters:");
-
-            TeamBuilder teamBuilder = new TeamBuilder(this);
-            teamBuilder.setTeamColor(team_cfg)
-            .setTeamName(teamName)
-            .setChatColor(team_cfg)
-            .setSpawnpoint(spawnPoint);
-
-            teamBuilder.buildTeam();
-        });
     }
 
     @Override
@@ -103,5 +57,23 @@ public final class VnizCore extends JavaPlugin {
         this.getCommand("start").setExecutor(new Commands(plugin));
         this.getCommand("test").setExecutor(new Commands(plugin));
         this.getCommand("jointeam").setExecutor(new Commands(plugin));
+    }
+
+    void parseTeams(VnizCore plugin){
+        Map<String, Object> teams_cfg = plugin.getConfig().getConfigurationSection("teams2").getValues(false);
+        teams_cfg.forEach( (team_cfg, obj) -> {
+            String teamName = plugin.getConfig().getString("teams2."+team_cfg+".name");
+            String spawnPoint = plugin.getConfig().getString("teams2."+team_cfg+".spawn");
+
+            plugin.getServer().getConsoleSender().sendMessage("Building team with parameters:");
+
+            TeamBuilder teamBuilder = new TeamBuilder(plugin);
+            teamBuilder.setTeamColor(team_cfg)
+                    .setTeamName(teamName)
+                    .setChatColor(team_cfg)
+                    .setSpawnpoint(spawnPoint);
+
+            teamBuilder.buildTeam();
+        });
     }
 }

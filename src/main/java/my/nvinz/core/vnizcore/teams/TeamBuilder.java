@@ -17,7 +17,7 @@ public class TeamBuilder {
 
     public void buildTeam(){
         try {
-            Team team = new Team(teamColor, teamName, chatColor, spawnPoint );
+            Team team = new Team(teamColor, teamName, chatColor, spawnPoint);
             plugin.teams.add(team);
         } catch (Exception e) {
             plugin.getServer().getConsoleSender().sendMessage("Error building team: " + e);
@@ -42,7 +42,7 @@ public class TeamBuilder {
             chatColor = ChatColor.valueOf(color.toUpperCase());
             plugin.getServer().getConsoleSender().sendMessage(" Chat color: " + color);
         } catch (NullPointerException e){
-            plugin.getServer().getConsoleSender().sendMessage("ERROR! Unknown team color: " + color);
+            plugin.getServer().getConsoleSender().sendMessage("ERROR! Unknown chat color: " + color);
         }
         return this;
     }
