@@ -28,9 +28,16 @@ public class Stage{
         ListIterator<Team> teamsIt = plugin.teams.listIterator();
         while (teamsIt.hasNext()){
             teamsIt.next().tpAllToSpawn();
+<<<<<<< HEAD:src/main/java/my/nvinz/core/vnizcore/game/Stage.java
         }
+=======
+        }*/
+        plugin.teams.forEach((n) -> {
+            n.tpAllToSpawn();
+            n.clearAllInventory();
+        });
+>>>>>>> 82ab46aa4d75fd801008f3abc4aef720e6b014e5:src/main/java/my/nvinz/core/vnizcore/Stage.java
     }
-
 
     public void startCountdown(){
         int countdownSeconds = 10;
