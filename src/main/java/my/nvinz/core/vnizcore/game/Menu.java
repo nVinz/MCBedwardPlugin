@@ -1,8 +1,11 @@
-package my.nvinz.core.vnizcore;
+package my.nvinz.core.vnizcore.game;
 
+import my.nvinz.core.vnizcore.VnizCore;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -10,9 +13,21 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 
-public class Menu implements InventoryHolder, Listener {
+public class Menu implements /*InventoryHolder,*/ Listener {
 
-    private final Inventory inventory;
+    @EventHandler
+    public void onRightClick(PlayerInteractEvent event){
+        if (event.getItem().getType().equals(Material.BOOK)){
+            event.getPlayer().sendMessage("Menu");
+        }
+        /*if(event.getPlayer().getItemInHand().getType() == Material.BLAZE_POWDER){
+            Fireball fire = p.getWorld().spawn(event.getPlayer().getLocation(), Fireball.class);
+            fire.setShooter(p);
+        }*/
+    }
+
+
+   /* private final Inventory inventory;
     private VnizCore plugin;
 
     public Menu(VnizCore plug, Player player) {
@@ -50,7 +65,7 @@ public class Menu implements InventoryHolder, Listener {
     @Override
     public Inventory getInventory() {
         return inventory;
-    }
+    }*/
 
     /*public void Menu(Player player){
         Thread thread = new Thread(new Runnable() {

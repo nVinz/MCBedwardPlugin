@@ -16,16 +16,13 @@ public class TeamBuilder {
     Material bedMaterial;
 
     private VnizCore plugin;
-    public TeamBuilder(VnizCore pl){
-        plugin = pl;
-    }
+    public TeamBuilder(VnizCore pl){ plugin = pl; }
 
     public void buildTeam(){
         try {
             Team team = new Team(teamColor, teamName, chatColor, spawnPoint, bedMaterial, maxPlayers);
             plugin.teams.add(team);
             plugin.teams_beds.put(team, bedMaterial);
-            //plugin.teams_beds.put(team, bedMaterial);
         } catch (Exception e) {
             plugin.getServer().getConsoleSender().sendMessage("Error building team: " + e);
         }
@@ -75,7 +72,6 @@ public class TeamBuilder {
 
     public TeamBuilder setBedMaterial(String color){
         bedMaterial = Material.valueOf(color.toUpperCase() + "_BED");
-        plugin.beds.add(bedMaterial);
         plugin.getServer().getConsoleSender().sendMessage(" Bed material: " + bedMaterial);
         return this;
     }

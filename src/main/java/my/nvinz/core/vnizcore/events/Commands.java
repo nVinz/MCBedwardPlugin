@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.Map;
 
@@ -20,7 +21,7 @@ public class Commands implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if(!(sender instanceof Player)) {
-            sender.sendMessage("Эта командя только дял игроков!");
+            sender.sendMessage("Эта командя только для игроков!");
             return false;
         }
 
@@ -30,14 +31,14 @@ public class Commands implements CommandExecutor {
             case "none":
                 try {
                     player.sendMessage(ChatColor.GRAY+"Вы покинули команду " + plugin.players_and_teams.get(player).chatColor+plugin.players_and_teams.get(player).teamColor);
-                    leaveTeam(player);
+                    plugin.removePlayerFromTeam(player);
                 } catch (NullPointerException e){
                     player.sendMessage(ChatColor.GRAY+"Вы не в команде.");
                 }
                 break;
             case "jointeam":
                 if (args.length == 1){
-                    leaveTeam(player);
+                    plugin.removePlayerFromTeam(player);
 
                     plugin.teams.forEach(team -> {
                         if (team.teamColor.equalsIgnoreCase(args[0])){
@@ -63,18 +64,13 @@ public class Commands implements CommandExecutor {
                 plugin.stage.startCountdown();
                 break;
             case "test":
-                Map<String, Object> str = plugin.getConfig().getConfigurationSection("teams2").getValues(false);
-                str.forEach( (team, obj) ->  player.sendMessage(team));
+                PlayerInventory inventory = player.getInventory();
+                inventory.clear();
+                inventory.setItem(4, plugin.items.items.get("select-team-item"));
                 break;
         }
 
         return true;
     }
 
-    private void leaveTeam(Player player){
-        try {
-            plugin.players_and_teams.get(player).removePlayer(player);
-            plugin.players_and_teams.remove(player);
-        } catch (NullPointerException e) {}
-    }
 }

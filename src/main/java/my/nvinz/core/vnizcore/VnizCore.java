@@ -4,7 +4,10 @@ import my.nvinz.core.vnizcore.events.BlockEvents;
 import my.nvinz.core.vnizcore.events.ChatEvents;
 import my.nvinz.core.vnizcore.events.Commands;
 import my.nvinz.core.vnizcore.events.GameEvents;
+import my.nvinz.core.vnizcore.game.Items;
+import my.nvinz.core.vnizcore.game.Menu;
 import my.nvinz.core.vnizcore.game.Stage;
+import my.nvinz.core.vnizcore.game.Variables;
 import my.nvinz.core.vnizcore.teams.Team;
 import my.nvinz.core.vnizcore.teams.TeamBuilder;
 import org.bukkit.ChatColor;
@@ -20,12 +23,13 @@ public final class VnizCore extends JavaPlugin {
 
     public Stage stage;
     public Stage.Status stageStatus;
+    public Variables variables;
+    public Items items;
 
     public List<Team> teams = new ArrayList<>();
     public List<Player> players = new ArrayList<>();    // Make non-full server game
     public Map<Player, Team> players_and_teams = new HashMap<>();
     public Map<Team, Material> teams_beds = new HashMap<>();
-    public List<Material> beds = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -34,6 +38,8 @@ public final class VnizCore extends JavaPlugin {
         setupConfig(this);
         parseTeams(this);
         setupStage(this);
+        variables =  new Variables(this);
+        items = new Items(this);
     }
 
     @Override
@@ -50,9 +56,11 @@ public final class VnizCore extends JavaPlugin {
              ChatEvents chatEvents = new ChatEvents(plugin);
              BlockEvents blockEvents = new BlockEvents(plugin);
              GameEvents gameEvents = new GameEvents(plugin);
+             Menu menu = new Menu();
              plugin.getServer().getPluginManager().registerEvents(blockEvents, plugin);
              plugin.getServer().getPluginManager().registerEvents(chatEvents, plugin);
              plugin.getServer().getPluginManager().registerEvents(gameEvents, plugin);
+             plugin.getServer().getPluginManager().registerEvents(menu, plugin);
         } catch (Exception e) {
              plugin.getServer().getConsoleSender().sendMessage("Error registering events: " + e.getMessage());
         }
@@ -82,7 +90,7 @@ public final class VnizCore extends JavaPlugin {
 
     void parseTeams(VnizCore plugin){
         try {
-            Map<String, Object> teams_cfg = plugin.getConfig().getConfigurationSection("teams2").getValues(false);
+            Map<String, Object> teams_cfg = plugin.getConfig().getConfigurationSection("teams").getValues(false);
             teams_cfg.forEach((team_cfg, obj) -> {
 
                 World world = plugin.getServer().getWorld(plugin.getConfig().getString("arena.world"));
@@ -90,12 +98,13 @@ public final class VnizCore extends JavaPlugin {
 
                 TeamBuilder teamBuilder = new TeamBuilder(plugin);
                 teamBuilder.setTeamColor(team_cfg)
-                        .setTeamName(plugin.getConfig().getString("teams2." + team_cfg + ".name"))
+                        .setTeamName(plugin.getConfig().getString("teams." + team_cfg + ".name"))
                         .setChatColor(team_cfg)
-                        .setSpawnPoint(plugin.getConfig().getString("teams2." + team_cfg + ".spawn"), world)
+                        .setSpawnPoint(plugin.getConfig().getString("teams." + team_cfg + ".spawn"), world)
                         .setBedMaterial(team_cfg)
-                        .setMaxPlayers(plugin.getConfig().getInt("teams2." + team_cfg + ".max-players"));
+                        .setMaxPlayers(plugin.getConfig().getInt("teams." + team_cfg + ".max-players"));
 
+                // Check if bed is staying
                 teamBuilder.buildTeam();
             });
         } catch (Exception e) {
@@ -115,10 +124,20 @@ public final class VnizCore extends JavaPlugin {
     /*
      *  Tells message to everyone on server
      */
+    @Deprecated
     public void makeAnnouncement(String message){
         for (Player players: this.getServer().getOnlinePlayers()){
             players.sendMessage(message);
         }
+    }
+
+    /*
+     *  Tells message to team players
+     */
+    public void makeTeamAnnouncement(Team team, String message){
+        team.players.forEach(player -> {
+            player.sendMessage(message);
+        });
     }
 
     public void addPlayerToTeam(Player player, Team team){
@@ -126,6 +145,13 @@ public final class VnizCore extends JavaPlugin {
         players_and_teams.put(player, team);
         player.sendMessage(ChatColor.GRAY+"Вы присоединились к команде " +
                 players_and_teams.get(player).chatColor+players_and_teams.get(player).teamName);
+    }
+
+    public void removePlayerFromTeam(Player player){
+        try {
+            players_and_teams.get(player).removePlayer(player);
+            players_and_teams.remove(player);
+        } catch (NullPointerException e) {}
     }
 
     /*
@@ -152,5 +178,21 @@ public final class VnizCore extends JavaPlugin {
         double[] coords = parseLocation(position);
         Location location = new Location(world, coords[0], coords[1], coords[2]);
         return location;
+    }
+
+    public void isTeamLost(Player player){
+        if (!players_and_teams.get(player).isAlive(1)) {
+            teams.remove(players_and_teams.get(player));
+            makeAnnouncement(ChatColor.GRAY + "Команда " +
+                    players_and_teams.get(player).chatColor + players_and_teams.get(player).teamName +
+                    (ChatColor.GRAY + " проиграла."));
+        }
+        checkWinner();
+    }
+
+    public void checkWinner(){
+        if (teams.size() == 1){
+            makeAnnouncement(ChatColor.GREEN+"Победила команда " + teams.get(0).chatColor + teams.get(0).teamName + ChatColor.GREEN+"!");
+        }
     }
 }

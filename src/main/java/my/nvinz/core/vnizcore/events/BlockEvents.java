@@ -2,6 +2,7 @@ package my.nvinz.core.vnizcore.events;
 
 import my.nvinz.core.vnizcore.VnizCore;
 import my.nvinz.core.vnizcore.game.Stage;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,10 +26,11 @@ public class BlockEvents implements Listener {
                 event.setCancelled(true);
             }
             if (event.getBlock().getBlockData() instanceof org.bukkit.block.data.type.Bed) {
-                event.getPlayer().sendMessage(String.valueOf(event.getBlock()));
                 plugin.teams_beds.forEach( (team, bed) -> {
-                    if (event.getBlock().equals(bed)){
-                        plugin.makeAnnouncement("Кровать команды " + team.chatColor+team.teamName + " разрушена.");
+                    if (event.getBlock().getType().equals(bed)){
+                        plugin.makeAnnouncement(ChatColor.GRAY+"Кровать команды " + team.chatColor+team.teamName + ChatColor.GRAY+" разрушена.");
+                        plugin.makeTeamAnnouncement(team, ChatColor.RED + "Внимание! Кровать вашей команды была уничтожена, теперь у вас осталасть только одна жизнь!");
+                        team.bedStanding = false;
                     }
                 });
             }

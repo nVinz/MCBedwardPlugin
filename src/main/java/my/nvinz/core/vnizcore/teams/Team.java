@@ -42,6 +42,7 @@ public class Team {
 
     public void removePlayer(Player player){
         players.remove(player);
+        currPlayers -= 1;
     }
 
     public boolean hasFree(){
@@ -49,16 +50,15 @@ public class Team {
         else return false;
     }
 
-    /*public boolean isBedStanding(){
-        if (bedLocation.getBlock().equals(Material.RED_BED)){
-            Material bed = Material.RED_BED;
-            Block block = bedLocation.getBlock();
-            //block.getBlockData().getMaterial().data.getTypeName();
-            //bed.getData().fac
-            return true;
-        }
-        else return false;
-    }*/
+    /*
+     *  flag to check was function call before or after death
+     *  0 - before
+     *  1 - after
+     */
+    public boolean isAlive(int flag){
+        if (currPlayers - flag == 0) return false;
+        else return true;
+    }
 
     /*
      *  Never used

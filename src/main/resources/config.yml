@@ -1,12 +1,28 @@
-teams: 2
-max-players: 2
-team-players: 1
-team-spawns:
-  - 0, 0, 0
-  - 0, 0, 0
-  - 0, 0, 0
-  - 0, 0, 0
-banned-words-enabled: true
-banned-words:
-  - пидор
-  - нигер
+max-players: 3
+min-players: 2
+countdown: 1
+items:
+  join-item:
+    item-id: slime_ball
+    name: "&a&lВойти в игру"
+    lore:
+      - "&7Нажмите ПКМ"
+  select-team-item:
+    item-id: magma_cream
+    name: "&a&lВыбрать команду"
+    lore:
+      - "&7Нажмите ПКМ"
+teams:
+  red:
+    name: Красные
+    spawn: -223.5, 64, -86.5
+    max-players: 1
+  blue:
+    name: Синие
+    spawn: -226.5, 64, -89.5
+    max-players: 1
+arena:
+  world: world
+lobby:
+  world: world
+  spawn: -226.5, 64, -86.5
