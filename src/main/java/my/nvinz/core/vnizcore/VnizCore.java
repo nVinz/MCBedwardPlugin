@@ -188,11 +188,13 @@ public final class VnizCore extends JavaPlugin {
                     (ChatColor.GRAY + " проиграла."));
         }
         checkWinner();
+        // change stage
     }
 
     public void checkWinner(){
         if (teams.size() == 1){
             makeAnnouncement(ChatColor.GREEN+"Победила команда " + teams.get(0).chatColor + teams.get(0).teamName + ChatColor.GREEN+"!");
         }
+        // change stage
     }
 }
