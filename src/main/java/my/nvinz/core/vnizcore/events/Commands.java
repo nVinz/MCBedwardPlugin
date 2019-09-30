@@ -41,17 +41,23 @@ public class Commands implements CommandExecutor {
 
                     plugin.teams.forEach(team -> {
                         if (team.teamColor.equalsIgnoreCase(args[0])){
-                            team.addPlayer(player);
-                            plugin.players_and_teams.put(player, team);
-                            return;
+                            if (team.hasFree()) {
+                                try {
+                                    plugin.addPlayerToTeam(player, team);
+                                    return;
+                                } catch (NullPointerException e) {
+                                    player.sendMessage(ChatColor.RED + "Неизвестная команда.");
+                                }
+                            }
+                            else {
+                                player.sendMessage(ChatColor.RED + "В команде нет мест.");
+                            }
                         }
                     });
-
-                    player.sendMessage(ChatColor.GRAY+"Вы присоединились к команде " + plugin.players_and_teams.get(player).chatColor+plugin.players_and_teams.get(player).teamName);
                 }
                 break;
             case "teams":
-                plugin.teams.forEach(team -> player.sendMessage(team.teamColor + ": " + team.players.toString()));
+                plugin.teams.forEach(team -> player.sendMessage(team.chatColor + team.teamName + ": " + team.players.toString()));
                 break;
             case "start":
                 plugin.stage.startCountdown();
@@ -59,7 +65,6 @@ public class Commands implements CommandExecutor {
             case "test":
                 Map<String, Object> str = plugin.getConfig().getConfigurationSection("teams2").getValues(false);
                 str.forEach( (team, obj) ->  player.sendMessage(team));
-                player.sendMessage(ChatColor.valueOf("RED2") + "1");
                 break;
         }
 

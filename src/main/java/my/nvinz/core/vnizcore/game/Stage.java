@@ -9,6 +9,7 @@ import java.util.ListIterator;
 
 public class Stage{
 
+
     VnizCore plugin;
     public enum Status {
         LOBBY,
@@ -20,34 +21,28 @@ public class Stage{
         plugin = pl;
     }
 
-    public void inLobby(){
-
-    }
-
     public void inGame(){
-        /*ListIterator<Team> teamsIt = plugin.teams.listIterator();
-        while (teamsIt.hasNext()){
-            teamsIt.next().tpAllToSpawn();
-<<<<<<< HEAD:src/main/java/my/nvinz/core/vnizcore/game/Stage.java
-        }
-=======
-        }* /
-        plugin.teams.forEach((n) -> {
-            n.tpAllToSpawn();
-            n.clearAllInventory();
+        plugin.stageStatus = Status.INGAME;
+        plugin.teams.forEach(team -> {
+            team.tpAllToSpawn();
+            //n.clearAllInventory();
         });
->>>>>>> 82ab46aa4d75fd801008f3abc4aef720e6b014e5:src/main/java/my/nvinz/core/vnizcore/Stage.java*/
     }
 
     public void startCountdown(){
+        plugin.stageStatus = Status.COUNTDOWN;
         int countdownSeconds = 10;
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 for (int i = countdownSeconds; i >= 0; i--) {
                     try {
-                        for (Player players: plugin.getServer().getOnlinePlayers()){
-                            players.sendMessage(ChatColor.GRAY+"Игра начнется через " + ChatColor.GREEN+Integer.toString(i));
+                        if (plugin.stageStatus == Status.COUNTDOWN) {
+                            plugin.makeAnnouncement(ChatColor.GRAY + "Игра начнется через " + ChatColor.GREEN + i);
+                        }
+                        else {
+                            plugin.makeAnnouncement(ChatColor.RED + "Недостаточно игроков для начала игры.");
+                            return;
                         }
                         Thread.sleep(1000);
                     } catch (InterruptedException e) { }
@@ -55,6 +50,17 @@ public class Stage{
                 for (Player players: plugin.getServer().getOnlinePlayers()){
                     players.sendMessage(ChatColor.GREEN+"Игра начинается!");
                 }
+
+                plugin.getServer().getOnlinePlayers().forEach(player -> {
+                    if (plugin.players_and_teams.get(player) == null){
+                        plugin.teams.forEach(team -> {
+                            if (team.hasFree() && !plugin.players_and_teams.containsKey(player)){
+                                plugin.addPlayerToTeam(player, team);
+                            }
+                        });
+                    }
+                });
+
                 inGame();
             }
         });
