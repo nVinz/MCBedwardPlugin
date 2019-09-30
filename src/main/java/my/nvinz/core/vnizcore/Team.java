@@ -62,7 +62,7 @@ public class Team {
         while (st.hasMoreTokens()) {
             spawnPositionX = Double.valueOf(st.nextToken());
             spawnPositionY = Double.valueOf(st.nextToken());
-            spawnPositionZ = Double.valueOf(st.nextToken());
+            spawnPositionZ = Double.valueOf(st.nextToken()); 
         }
     }
 }
