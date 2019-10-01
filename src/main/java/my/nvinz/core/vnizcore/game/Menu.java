@@ -17,9 +17,11 @@ public class Menu implements /*InventoryHolder,*/ Listener {
 
     @EventHandler
     public void onRightClick(PlayerInteractEvent event){
-        if (event.getItem().getType().equals(Material.BOOK)){
-            event.getPlayer().sendMessage("Menu");
-        }
+        try {
+            if (event.getItem().getType().equals(Material.BOOK)) {
+                event.getPlayer().sendMessage("Menu");
+            }
+        } catch (Exception e) {}
         /*if(event.getPlayer().getItemInHand().getType() == Material.BLAZE_POWDER){
             Fireball fire = p.getWorld().spawn(event.getPlayer().getLocation(), Fireball.class);
             fire.setShooter(p);

@@ -1,6 +1,7 @@
 package my.nvinz.core.vnizcore.events;
 
 import my.nvinz.core.vnizcore.VnizCore;
+import my.nvinz.core.vnizcore.game.Stage;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -58,12 +59,21 @@ public class Commands implements CommandExecutor {
                 }
                 break;
             case "teams":
-                plugin.teams.forEach(team -> player.sendMessage(team.chatColor + team.teamName + ": " + team.players.toString()));
+                plugin.teams.forEach(team -> {
+                    player.sendMessage(team.chatColor + team.teamName + ": " + team.players.toString());
+                    if (team.players.isEmpty()){
+                        plugin.makeAnnouncement(ChatColor.GRAY + "Команда " +
+                                team.chatColor +
+                                team.teamName +
+                                (ChatColor.LIGHT_PURPLE + " проиграла."));
+                    }
+                });
                 break;
             case "start":
                 plugin.stage.startCountdown();
                 break;
             case "test":
+                plugin.stageStatus = Stage.Status.AFTERGAME;
                 PlayerInventory inventory = player.getInventory();
                 inventory.clear();
                 inventory.setItem(4, plugin.items.items.get("select-team-item"));

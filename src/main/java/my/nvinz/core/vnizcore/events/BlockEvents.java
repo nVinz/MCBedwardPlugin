@@ -22,15 +22,18 @@ public class BlockEvents implements Listener {
             event.setCancelled(true);
         }
         else if (plugin.stageStatus.equals(Stage.Status.INGAME)){
-            if (event.getBlock().equals(Material.GRASS_BLOCK)){
+            if (!plugin.variables.allowedMaterials.contains(event.getBlock().getType())){
                 event.setCancelled(true);
             }
             if (event.getBlock().getBlockData() instanceof org.bukkit.block.data.type.Bed) {
                 plugin.teams_beds.forEach( (team, bed) -> {
                     if (event.getBlock().getType().equals(bed)){
-                        plugin.makeAnnouncement(ChatColor.GRAY+"Кровать команды " + team.chatColor+team.teamName + ChatColor.GRAY+" разрушена.");
-                        plugin.makeTeamAnnouncement(team, ChatColor.RED + "Внимание! Кровать вашей команды была уничтожена, теперь у вас осталасть только одна жизнь!");
-                        team.bedStanding = false;
+                        if (team.bedStanding) {
+                            // TODO add sound effect
+                            plugin.makeAnnouncement(ChatColor.GRAY + "Кровать команды " + team.chatColor + team.teamName + ChatColor.GRAY + " разрушена.");
+                            plugin.makeTeamAnnouncement(team, ChatColor.RED + "Внимание! Кровать вашей команды была уничтожена, теперь у вас осталасть только одна жизнь!");
+                            team.bedStanding = false;
+                        }
                     }
                 });
             }
@@ -41,6 +44,11 @@ public class BlockEvents implements Listener {
     public void onPlace(BlockPlaceEvent event){
         if (plugin.stageStatus.equals(Stage.Status.LOBBY)){
             event.setCancelled(true);
+        }
+        else if (plugin.stageStatus.equals(Stage.Status.INGAME)){
+            if (!plugin.variables.allowedMaterials.contains(event.getBlock().getType())){
+                event.setCancelled(true);
+            }
         }
     }
 }

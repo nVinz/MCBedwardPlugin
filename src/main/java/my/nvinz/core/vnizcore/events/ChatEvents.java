@@ -18,24 +18,25 @@ public class ChatEvents implements Listener {
 
     @EventHandler
     public void chatCheck(AsyncPlayerChatEvent event){
-        Player player = event.getPlayer();
-        if (plugin.players_and_teams.containsKey(player)) {
-            event.setFormat(plugin.players_and_teams.get(player).chatColor + player.getName() + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + event.getMessage());
+        if (plugin.players_and_teams.containsKey(event.getPlayer())) {
+            event.setFormat(plugin.players_and_teams.get(event.getPlayer()).chatColor + event.getPlayer().getName() +
+                    ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + event.getMessage());
         }
         else{
-            event.setFormat(ChatColor.GRAY+player.getName() + ChatColor.DARK_GRAY+": " + ChatColor.GRAY+event.getMessage());
+            event.setFormat(ChatColor.GRAY+event.getPlayer().getName() + ChatColor.DARK_GRAY+": " + ChatColor.GRAY+event.getMessage());
         }
     }
 
+    // TODO add sound effect
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
         if (plugin.stageStatus.equals(Stage.Status.LOBBY)) {
 
             PlayerInventory inventory = event.getPlayer().getInventory();
             inventory.clear();
-            inventory.setItem(4, plugin.items.items.get("join-item"));
+            inventory.setItem(4, plugin.items.items.get("join-item"));  // TODO not requires and on command
 
-            plugin.players.add(event.getPlayer());      // Make non-full server game
+            plugin.players.add(event.getPlayer());      // TODO Make non-full server game
             event.getPlayer().teleport(plugin.variables.lobbySpawnPoint);
             int currPlayers = plugin.getServer().getOnlinePlayers().size();
             if (currPlayers < plugin.variables.maxPlayers)
@@ -45,6 +46,7 @@ public class ChatEvents implements Listener {
                 event.setJoinMessage(ChatColor.DARK_GRAY + "[" + ChatColor.GREEN + currPlayers + ChatColor.GRAY + "/" + ChatColor.GREEN + plugin.variables.maxPlayers + ChatColor.DARK_GRAY + "] " +
                         ChatColor.WHITE + event.getPlayer().getName() + ChatColor.GRAY + " присоединился к игре.");
                 plugin.stage.startCountdown();
+                // TODO realize min-players
             }
         }
         else {
@@ -52,6 +54,7 @@ public class ChatEvents implements Listener {
         }
     }
 
+    // TODO add sound effect
     @EventHandler
     public void onLeave(PlayerQuitEvent event){
         if (plugin.stageStatus.equals(Stage.Status.LOBBY) || plugin.stageStatus.equals(Stage.Status.COUNTDOWN)) {
@@ -62,7 +65,8 @@ public class ChatEvents implements Listener {
         }
         else if (plugin.stageStatus.equals(Stage.Status.INGAME)){
             event.setQuitMessage(plugin.players_and_teams.get(event.getPlayer()).chatColor+event.getPlayer().getName() + ChatColor.GRAY+" покинул игру.");
-            plugin.isTeamLost(event.getPlayer());
+            plugin.removePlayerFromTeam(event.getPlayer());
+            plugin.isTeamLost();
         }
         else {
             event.setQuitMessage("");

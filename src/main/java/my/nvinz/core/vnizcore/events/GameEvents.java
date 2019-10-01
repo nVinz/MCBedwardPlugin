@@ -2,7 +2,9 @@ package my.nvinz.core.vnizcore.events;
 
 import my.nvinz.core.vnizcore.VnizCore;
 import my.nvinz.core.vnizcore.game.Stage;
+import my.nvinz.core.vnizcore.teams.Team;
 import org.bukkit.ChatColor;
+import org.bukkit.EntityEffect;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,14 +23,25 @@ public class GameEvents implements Listener {
     }
 
     @EventHandler
-    public void playerHitByPlayer(EntityDamageByEntityEvent event){
-        if (plugin.stageStatus.equals(Stage.Status.LOBBY)){
-            event.setCancelled(true);
-        }
-        else if (event.getEntity().getType().equals(EntityType.PLAYER) &&
-            event.getDamager().getType().equals(EntityType.PLAYER)){
-            if (plugin.players_and_teams.get(event.getEntity()).equals(plugin.players_and_teams.get(event.getDamager()))){
-                event.setCancelled(true);
+    public void playerDamageByPlayer(EntityDamageByEntityEvent event){
+        if (event.getEntity() instanceof Player){
+            if (event.getDamager() instanceof Player){
+                if (!plugin.stageStatus.equals(Stage.Status.INGAME)){
+                    event.setCancelled(true);
+                }
+                else if (plugin.players_and_teams.get(event.getEntity()).equals(plugin.players_and_teams.get(event.getDamager()))){
+                    event.setCancelled(true);
+                }
+                else if (((Player) event.getEntity()).getHealth() <= event.getDamage()){
+                    plugin.makeAnnouncement(
+                            plugin.players_and_teams.get(((Player) event.getDamager()).getPlayer()).chatColor+
+                            ((Player) event.getDamager()).getPlayer().getName() +
+                            ChatColor.GRAY+" убил " +
+                            plugin.players_and_teams.get(((Player) event.getEntity()).getPlayer()).chatColor+
+                            ((Player) event.getEntity()).getPlayer().getName());
+                    event.setCancelled(true);
+                    plugin.killAndTp((Player) event.getEntity());
+                }
             }
         }
     }
@@ -36,8 +49,16 @@ public class GameEvents implements Listener {
     @EventHandler
     public void playerDamage(EntityDamageEvent event){
         if (event.getEntity() instanceof Player){
-            if (plugin.stageStatus.equals(Stage.Status.LOBBY)){
+            if (!plugin.stageStatus.equals(Stage.Status.INGAME)){
                 event.setCancelled(true);
+            }
+            else if (((Player) event.getEntity()).getHealth() <= event.getDamage()){
+                plugin.makeAnnouncement(
+                        plugin.players_and_teams.get(((Player) event.getEntity()).getPlayer()).chatColor +
+                        ((Player) event.getEntity()).getPlayer().getName() +
+                        ChatColor.GRAY + " умер.");
+                event.setCancelled(true);
+                plugin.killAndTp((Player) event.getEntity());
             }
         }
     }
@@ -56,28 +77,33 @@ public class GameEvents implements Listener {
         else event.setRespawnLocation(plugin.variables.lobbySpawnPoint);
     }
 
-    @EventHandler
+    /*@EventHandler
     public void playerDeath(PlayerDeathEvent event){
-        event.setDeathMessage(
-                plugin.players_and_teams.get(event.getEntity().getKiller()).chatColor+event.getEntity().getKiller().getName() +
-                ChatColor.GRAY + " убил " +
-                plugin.players_and_teams.get(event.getEntity()).chatColor+event.getEntity().getName());
-
+        if (event.getEntity().getKiller() != null) {
+            event.setDeathMessage(
+                    plugin.players_and_teams.get(event.getEntity().getKiller()).chatColor + event.getEntity().getKiller().getName() +
+                            ChatColor.GRAY + " убил " +
+                            plugin.players_and_teams.get(event.getEntity()).chatColor + event.getEntity().getName());
+        }
+        else {
+            event.setDeathMessage(plugin.players_and_teams.get(event.getEntity()).chatColor + event.getEntity().getName() +
+                    ChatColor.GRAY + " умер.");
+        }
         try {
             if (!plugin.players_and_teams.get(event.getEntity()).bedStanding) {
                 event.getEntity().sendMessage(ChatColor.RED + "Вы выбыли из игры.");
                 plugin.makeAnnouncement(plugin.players_and_teams.get(event.getEntity()).chatColor + event.getEntity().getName() + ChatColor.GRAY + " выбыл из игры.");
+                plugin.removePlayerFromTeam(event.getEntity());
+                plugin.isTeamLost();
             }
-            plugin.isTeamLost(event.getEntity());
-        } finally {
-            plugin.removePlayerFromTeam(event.getEntity());
-        }
-    }
+        } catch (Exception e) {}
+    }*/
 
     @EventHandler
-    public void InventoryClickEvent(InventoryClickEvent event) {
+    public void inventoryClickEvent(InventoryClickEvent event) {
         if (plugin.stageStatus.equals(Stage.Status.LOBBY)) {
             event.setCancelled(true);
         }
     }
+
 }

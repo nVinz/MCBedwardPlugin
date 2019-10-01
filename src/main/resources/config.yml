@@ -1,6 +1,25 @@
 max-players: 3
 min-players: 2
 countdown: 1
+resources:
+  brick:
+    name: Кирпич
+    timer: 1
+    spawns:
+      - "-15.5, 73, -1.5"
+  iron:
+    name: Железо
+    timer: 5
+    spawns:
+      - "-15.5, 73, -3.5"
+  gold:
+    name: Золото
+    timer: 10
+    spawns:
+      - "-15.5, 73, -5.5"
+allowed-blocks:
+  - GRASS_BLOCK
+  - CUT_SANDSTONE
 items:
   join-item:
     item-id: slime_ball
