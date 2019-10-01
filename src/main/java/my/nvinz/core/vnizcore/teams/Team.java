@@ -16,7 +16,6 @@ public class Team {
     public Location spawnPoint;
     public List<Player> players = new ArrayList<>();
     public int maxPlayers;
-    public int currPlayers;
     public boolean bedStanding;
     public Material bedMaterial;
 
@@ -27,7 +26,6 @@ public class Team {
         spawnPoint = spawnPoint_;
         bedMaterial = bedMaterial_;
         maxPlayers = maxPlayers_;
-        currPlayers = 0;
         bedStanding = true;
     }
 
@@ -37,27 +35,15 @@ public class Team {
 
     public void addPlayer(Player player){
         players.add(player);
-        currPlayers += 1;
     }
 
     public void removePlayer(Player player){
         players.remove(player);
-        currPlayers -= 1;
     }
 
     public boolean hasFree(){
-        if (currPlayers < maxPlayers) return true;
+        if (players.size() < maxPlayers) return true;
         else return false;
-    }
-
-    /*
-     *  flag to check was function call before or after death
-     *  0 - before
-     *  1 - after
-     */
-    public boolean isAlive(int flag){
-        if (currPlayers - flag == 0) return false;
-        else return true;
     }
 
     /*

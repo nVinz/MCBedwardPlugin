@@ -1,11 +1,8 @@
 package my.nvinz.core.vnizcore.game;
 
 import my.nvinz.core.vnizcore.VnizCore;
-import my.nvinz.core.vnizcore.teams.Team;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
-import java.util.ListIterator;
 
 public class Stage{
 
@@ -59,11 +56,9 @@ public class Stage{
     }
 
     public void inGame(){
+        plugin.resourceSpawn.setupThreads();
+        plugin.resourceSpawn.runThreads();
         plugin.stageStatus = Status.INGAME;
-        /*plugin.teams.forEach(team -> {
-            team.tpAllToSpawn();
-            //n.clearAllInventory();
-        });*/
         plugin.players_and_teams.forEach( (player, team) -> {
             player.getInventory().clear();
             team.tpAllToSpawn();
@@ -73,7 +68,7 @@ public class Stage{
     public void inAftergame(){
         plugin.stageStatus = Status.AFTERGAME;
         plugin.players.forEach( player -> {
-            player.teleport(plugin.variables.lobbySpawnPoint);      // Make exit to world
+            player.teleport(plugin.variables.lobbySpawnPoint);      // TODO Make exit to world
         });
     }
 }

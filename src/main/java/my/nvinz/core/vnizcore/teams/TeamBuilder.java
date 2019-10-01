@@ -23,6 +23,7 @@ public class TeamBuilder {
             Team team = new Team(teamColor, teamName, chatColor, spawnPoint, bedMaterial, maxPlayers);
             plugin.teams.add(team);
             plugin.teams_beds.put(team, bedMaterial);
+            plugin.variables.allowedMaterials.add(bedMaterial);
         } catch (Exception e) {
             plugin.getServer().getConsoleSender().sendMessage("Error building team: " + e);
         }
