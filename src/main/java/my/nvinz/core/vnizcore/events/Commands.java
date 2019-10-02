@@ -28,57 +28,68 @@ public class Commands implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        switch (command.getName()) {
-            case "none":
-                try {
-                    player.sendMessage(ChatColor.GRAY+"Вы покинули команду " + plugin.players_and_teams.get(player).chatColor+plugin.players_and_teams.get(player).teamColor);
-                    plugin.removePlayerFromTeam(player);
-                } catch (NullPointerException e){
-                    player.sendMessage(ChatColor.GRAY+"Вы не в команде.");
-                }
-                break;
-            case "jointeam":
-                if (args.length == 1){
-                    plugin.removePlayerFromTeam(player);
-
-                    plugin.teams.forEach(team -> {
-                        if (team.teamColor.equalsIgnoreCase(args[0])){
-                            if (team.hasFree()) {
-                                try {
-                                    plugin.addPlayerToTeam(player, team);
-                                    return;
-                                } catch (NullPointerException e) {
-                                    player.sendMessage(ChatColor.RED + "Неизвестная команда.");
-                                }
-                            }
-                            else {
-                                player.sendMessage(ChatColor.RED + "В команде нет мест.");
-                            }
-                        }
-                    });
-                }
-                break;
-            case "teams":
-                plugin.teams.forEach(team -> {
-                    player.sendMessage(team.chatColor + team.teamName + ": " + team.players.toString());
-                    if (team.players.isEmpty()){
-                        plugin.makeAnnouncement(ChatColor.GRAY + "Команда " +
-                                team.chatColor +
-                                team.teamName +
-                                (ChatColor.LIGHT_PURPLE + " проиграла."));
+        if (command.getName().equalsIgnoreCase("Vniz")){
+            if (args.length == 0){
+                player.sendMessage(ChatColor.GRAY+"Vniz");
+                return false;
+            }
+            switch (args[0]) {
+                case "none":
+                    try {
+                        player.sendMessage(ChatColor.GRAY+"Вы покинули команду " + plugin.players_and_teams.get(player).chatColor+plugin.players_and_teams.get(player).teamColor);
+                        plugin.removePlayerFromTeam(player);
+                    } catch (NullPointerException e){
+                        player.sendMessage(ChatColor.GRAY+"Вы не в команде.");
                     }
-                });
-                break;
-            case "start":
-                plugin.stage.startCountdown();
-                break;
-            case "test":
-                plugin.stageStatus = Stage.Status.AFTERGAME;
-                PlayerInventory inventory = player.getInventory();
-                inventory.clear();
-                inventory.setItem(4, plugin.items.items.get("select-team-item"));
-                break;
+                    break;
+                case "team":
+                    if (args.length == 2) {
+                        if (plugin.players.contains(player)) {
+                            plugin.teams.forEach(team -> {
+                                if (team.teamColor.equalsIgnoreCase(args[1])) {
+                                    if (team.hasFree()) {
+                                        try {
+                                            plugin.removePlayerFromTeam(player);
+                                            plugin.addPlayerToTeam(player, team);
+                                            return;
+                                        } catch (NullPointerException e) {
+                                            player.sendMessage(ChatColor.RED + "Неизвестная команда.");
+                                        }
+                                    } else {
+                                        player.sendMessage(ChatColor.RED + "В команде нет мест.");
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            player.sendMessage(ChatColor.RED + "Вы не находитесь в лобби.");
+                        }
+                    }
+                    break;
+                case "teams":
+                    plugin.teams.forEach(team -> {
+                        player.sendMessage(team.chatColor + team.teamName + ": " + team.players.toString());
+                    });
+                    break;
+                case "start":
+                    plugin.stage.startCountdown();
+                    break;
+                case "join":
+                    plugin.joinPlayer(player);
+                    break;
+                case "leave":
+                    plugin.leavePlayer(player);
+                    break;
+                case "test":
+                    plugin.stageStatus = Stage.Status.AFTERGAME;
+                    PlayerInventory inventory = player.getInventory();
+                    inventory.clear();
+                    inventory.setItem(4, plugin.items.items.get("select-team-item"));
+                    break;
+            }
         }
+
+
 
         return true;
     }

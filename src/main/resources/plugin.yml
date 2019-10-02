@@ -3,15 +3,7 @@ version: ${project.version}
 main: my.nvinz.core.vnizcore.VnizCore
 api-version: 1.13
 authors: [nVinz]
-description: Core Server Plugin
+description: BedWars Minigame Plugin
 commands:
-  none:
-    description: leave team
-  teams:
-    description: show teams
-  start:
-    description: start game
-  test:
-    description: test command
-  jointeam:
-    description: choose team
+  vniz:
+    description: plugin command

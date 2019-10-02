@@ -13,6 +13,7 @@ public class Variables {
     public int maxPlayers;
     public int minPlayers;
     public Location lobbySpawnPoint;
+    public Location lobbyExitPoint;
     public List<Material> allowedMaterials = new ArrayList<>();
     public Variables(VnizCore pl){
         plugin = pl;
@@ -21,6 +22,8 @@ public class Variables {
             minPlayers = plugin.getConfig().getInt("min-players");
             lobbySpawnPoint = plugin.setupLocation(plugin.getServer().getWorld(plugin.getConfig().getString("lobby.world")),
                     plugin.getConfig().getString("lobby.spawn"));
+            lobbyExitPoint = plugin.setupLocation(plugin.getServer().getWorld(plugin.getConfig().getString("exit.world")),
+                    plugin.getConfig().getString("exit.spawn"));
             List<String> allowedMaterialsList = plugin.getConfig().getStringList("allowed-blocks");
             allowedMaterialsList.forEach(material -> {
                 allowedMaterials.add(Material.getMaterial(material));

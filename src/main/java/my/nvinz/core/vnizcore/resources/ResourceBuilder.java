@@ -8,13 +8,13 @@ import java.util.List;
 
 public class ResourceBuilder {
 
-    String name;
-    Material material;
-    Material block;
-    int timer;
-    List<Location> locations;
+    private String name;
+    private Material material;
+    private Material block;
+    private int timer;
+    private List<Location> locations;
 
-    VnizCore plugin;
+    private VnizCore plugin;
     public ResourceBuilder(VnizCore pl){ plugin = pl; }
 
     public void buildResource(){

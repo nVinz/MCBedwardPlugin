@@ -8,6 +8,7 @@ import my.nvinz.core.vnizcore.game.Items;
 import my.nvinz.core.vnizcore.game.Menu;
 import my.nvinz.core.vnizcore.game.Stage;
 import my.nvinz.core.vnizcore.game.Variables;
+import my.nvinz.core.vnizcore.map.PrepareMap;
 import my.nvinz.core.vnizcore.resources.Resource;
 import my.nvinz.core.vnizcore.resources.ResourceBuilder;
 import my.nvinz.core.vnizcore.resources.ResourceSpawn;
@@ -15,6 +16,7 @@ import my.nvinz.core.vnizcore.teams.Team;
 import my.nvinz.core.vnizcore.teams.TeamBuilder;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
@@ -26,9 +28,11 @@ public final class VnizCore extends JavaPlugin {
     public Variables variables;
     public Items items;
     public ResourceSpawn resourceSpawn;
+    public PrepareMap prepareMap;
 
     public List<Team> teams = new ArrayList<>();
-    public List<Player> players = new ArrayList<>();    // TODO Make non-full server game
+    public List<Player> players = new ArrayList<>();
+    public Map<String, Inventory> inventories = new HashMap<>();
     public Map<Player, Team> players_and_teams = new HashMap<>();
     public Map<Team, Material> teams_beds = new HashMap<>();
     public List<Resource> resources = new ArrayList<>();
@@ -40,12 +44,14 @@ public final class VnizCore extends JavaPlugin {
 
         registerEvents(this);
         setCommandsExecutors(this);
-        setupConfig(this);
+        loadConfig(this);
         parseTeams(this);
         parseResources(this);
         setupStage(this);
 
         resourceSpawn = new ResourceSpawn(this);
+
+        prepareMap = new PrepareMap(this);
     }
 
     @Override
@@ -84,11 +90,7 @@ public final class VnizCore extends JavaPlugin {
      */
     void setCommandsExecutors(VnizCore plugin){
         try {
-            plugin.getCommand("none").setExecutor(new Commands(plugin));
-            plugin.getCommand("teams").setExecutor(new Commands(plugin));
-            plugin.getCommand("start").setExecutor(new Commands(plugin));
-            plugin.getCommand("test").setExecutor(new Commands(plugin));
-            plugin.getCommand("jointeam").setExecutor(new Commands(plugin));
+            plugin.getCommand("vniz").setExecutor(new Commands(plugin));
         } catch (Exception e) {
             plugin.getServer().getConsoleSender().sendMessage("Error setting commands executors: " + e.getMessage());
         }
@@ -100,7 +102,7 @@ public final class VnizCore extends JavaPlugin {
      *  config.yml
      *  TODO create if not exists
      */
-    void setupConfig(VnizCore plugin){
+    void loadConfig(VnizCore plugin){
         try {
             plugin.getConfig().options().copyDefaults(true);
             //plugin.saveConfig();
@@ -157,11 +159,12 @@ public final class VnizCore extends JavaPlugin {
                 });
 
                 ResourceBuilder resourceBuilder = new ResourceBuilder(this);
-                resourceBuilder.setName(plugin.getConfig().getString("resources." + resource_cfg + ".name"))
-                        .setMaterial(setupMaterial(resource_cfg.toUpperCase()))
-                .setBlock(setupBlock(resource_cfg.toUpperCase()))
-                .setTimer(plugin.getConfig().getInt("resources." + resource_cfg + ".timer"))
-                .setLocations(locations);
+                resourceBuilder
+                    .setName(plugin.getConfig().getString(resource_cfg))
+                    .setMaterial(setupMaterial(resource_cfg.toUpperCase()))
+                    .setBlock(setupBlock(resource_cfg.toUpperCase()))
+                    .setTimer(plugin.getConfig().getInt("resources." + resource_cfg + ".timer"))
+                    .setLocations(locations);
                 resourceBuilder.buildResource();
             });
         } catch (Exception e) {
@@ -187,9 +190,7 @@ public final class VnizCore extends JavaPlugin {
      *  TODO not for all server
      */
     public void makeAnnouncement(String message){
-        for (Player players: this.getServer().getOnlinePlayers()){
-            players.sendMessage(message);
-        }
+        players.forEach(player -> player.sendMessage(message));
     }
 
     /**
@@ -201,6 +202,66 @@ public final class VnizCore extends JavaPlugin {
         team.players.forEach(player -> {
             player.sendMessage(message);
         });
+    }
+
+    // TODO JavaDoc
+    public void playSound(Sound sound){
+        players.forEach(player -> {
+            player.playSound(player.getLocation(), sound, 5, 1);
+        });
+    }
+
+    // TODO JavaDoc
+    public void joinPlayer(Player player) {
+        players.add(player);
+        savePlayerInventory(player);
+        player.teleport(variables.lobbySpawnPoint);
+        int currPlayers = players.size();
+        if (currPlayers < variables.maxPlayers)
+            makeAnnouncement(ChatColor.DARK_GRAY + "[" + ChatColor.RED + players.size() + ChatColor.GRAY + "/" + ChatColor.RED + variables.maxPlayers + ChatColor.DARK_GRAY + "] " +
+                    ChatColor.WHITE + player.getName() + ChatColor.GRAY + " присоединился к игре.");
+        else {
+            makeAnnouncement(ChatColor.DARK_GRAY + "[" + ChatColor.GREEN + currPlayers + ChatColor.GRAY + "/" + ChatColor.GREEN + variables.maxPlayers + ChatColor.DARK_GRAY + "] " +
+                    ChatColor.WHITE + player.getName() + ChatColor.GRAY + " присоединился к игре.");
+            stage.startCountdown();
+        }
+    }
+
+    // TODO JavaDoc
+    public void leavePlayer(Player player){
+        players.remove(player);
+        restorePlayerInventory(player);
+        player.teleport(variables.lobbyExitPoint);
+        player.sendMessage(ChatColor.GRAY + "Вы покинули игру");
+        if (stageStatus.equals(Stage.Status.LOBBY) || stageStatus.equals(Stage.Status.COUNTDOWN)) {
+            String currPlayers = Integer.toString(players.size() - 1);
+            makeAnnouncement(ChatColor.DARK_GRAY + "[" + ChatColor.RED + currPlayers + ChatColor.GRAY + "/" + ChatColor.RED + variables.maxPlayers + ChatColor.DARK_GRAY + "] " +
+                    ChatColor.WHITE + player.getName() + ChatColor.GRAY + " покинул игру.");
+            stageStatus = Stage.Status.LOBBY;
+            if (players_and_teams.containsKey(player)){
+                removePlayerFromTeam(player);
+                //players_and_teams.remove(player);
+            }
+        }
+        else if (stageStatus.equals(Stage.Status.INGAME)){
+            makeAnnouncement(players_and_teams.get(player).chatColor+player.getName() + ChatColor.GRAY+" покинул игру.");
+            removePlayerFromTeam(player);
+            isTeamLost();
+        }
+    }
+
+    public void savePlayerInventory(Player player){
+        /*Inventory inventory = player.getInventory();*/
+        inventories.put(player.getName(), player.getInventory());
+        player.saveData();
+        player.getInventory().clear();
+    }
+
+    public void restorePlayerInventory(Player player){
+        player.getInventory().clear();
+        player.loadData();
+        /*player. (inventories.get(player));
+        inventories.get(player).*/
     }
 
     /**
@@ -309,12 +370,12 @@ public final class VnizCore extends JavaPlugin {
      *  If true
      *      delete it from List<Team> teams
      *      make announce
-     *  TODO add sound effect
      */
     public void isTeamLost(){
         teams.forEach(team-> {
             if (team.players.isEmpty()){
-               makeAnnouncement(ChatColor.GRAY + "Команда " +
+                playSound(Sound.ENTITY_BLAZE_DEATH);
+                makeAnnouncement(ChatColor.GRAY + "Команда " +
                         team.chatColor + team.teamName +
                         (ChatColor.GRAY + " проиграла."));
                 teams.remove(team);
