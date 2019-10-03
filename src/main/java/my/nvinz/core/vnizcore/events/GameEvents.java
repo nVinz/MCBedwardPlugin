@@ -2,18 +2,16 @@ package my.nvinz.core.vnizcore.events;
 
 import my.nvinz.core.vnizcore.VnizCore;
 import my.nvinz.core.vnizcore.game.Stage;
-import my.nvinz.core.vnizcore.teams.Team;
 import org.bukkit.ChatColor;
-import org.bukkit.EntityEffect;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+
+import java.util.Objects;
 
 public class GameEvents implements Listener {
 
@@ -34,10 +32,12 @@ public class GameEvents implements Listener {
                     } else if (((Player) event.getEntity()).getHealth() <= event.getDamage()) {
                         plugin.makeAnnouncement(
                                 plugin.players_and_teams.get(((Player) event.getDamager()).getPlayer()).chatColor +
-                                        ((Player) event.getDamager()).getPlayer().getName() +
+                                        Objects.requireNonNull(
+                                                ((Player) event.getDamager()).getPlayer()).getName() +
                                         ChatColor.GRAY + " убил " +
                                         plugin.players_and_teams.get(((Player) event.getEntity()).getPlayer()).chatColor +
-                                        ((Player) event.getEntity()).getPlayer().getName());
+                                        Objects.requireNonNull(
+                                                ((Player) event.getEntity()).getPlayer()).getName());
                         event.setCancelled(true);
                         plugin.killAndTp((Player) event.getEntity());
                     }
@@ -55,8 +55,9 @@ public class GameEvents implements Listener {
                 } else if (((Player) event.getEntity()).getHealth() <= event.getDamage()) {
                     plugin.makeAnnouncement(
                             plugin.players_and_teams.get(((Player) event.getEntity()).getPlayer()).chatColor +
-                                    ((Player) event.getEntity()).getPlayer().getName() +
-                                    ChatColor.GRAY + " умер.");
+                                    Objects.requireNonNull(
+                                            ((Player) event.getEntity()).getPlayer())
+                                    .getName() +ChatColor.GRAY + " умер.");
                     event.setCancelled(true);
                     plugin.killAndTp((Player) event.getEntity());
                 }
@@ -87,4 +88,6 @@ public class GameEvents implements Listener {
             }
         }
     }
+
+    // TODO Disable craft
 }

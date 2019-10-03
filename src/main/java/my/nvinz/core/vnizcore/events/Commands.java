@@ -51,7 +51,6 @@ public class Commands implements CommandExecutor {
                                         try {
                                             plugin.removePlayerFromTeam(player);
                                             plugin.addPlayerToTeam(player, team);
-                                            return;
                                         } catch (NullPointerException e) {
                                             player.sendMessage(ChatColor.RED + "Неизвестная команда.");
                                         }
@@ -85,6 +84,10 @@ public class Commands implements CommandExecutor {
                     PlayerInventory inventory = player.getInventory();
                     inventory.clear();
                     inventory.setItem(4, plugin.items.items.get("select-team-item"));
+                    break;
+                case "reload":
+                    plugin.reloadConfig(plugin);
+                    player.sendMessage(ChatColor.GREEN+"Конфиг перезагружен.");
                     break;
             }
         }

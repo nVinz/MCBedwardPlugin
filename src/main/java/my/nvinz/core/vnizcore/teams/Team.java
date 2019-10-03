@@ -1,5 +1,7 @@
 package my.nvinz.core.vnizcore.teams;
 
+import my.nvinz.core.vnizcore.VnizCore;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,11 +17,12 @@ public class Team {
     public ChatColor chatColor;
     public Location spawnPoint;
     public List<Player> players = new ArrayList<>();
-    public int maxPlayers;
+    private int maxPlayers;
     public boolean bedStanding;
     public Material bedMaterial;
-
-    public Team(String teamColor_, String teamName_, ChatColor chatColor_, Location spawnPoint_, Material bedMaterial_, int maxPlayers_){
+    private VnizCore plugin;
+    Team(VnizCore pl, String teamColor_, String teamName_, ChatColor chatColor_, Location spawnPoint_, Material bedMaterial_, int maxPlayers_){
+        plugin = pl;
         teamColor = teamColor_;
         teamName = teamName_;
         chatColor = chatColor_;
@@ -30,7 +33,9 @@ public class Team {
     }
 
     public void tpAllToSpawn(){
-        players.forEach(player -> player.teleport(spawnPoint));
+        try {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> players.forEach(player -> player.teleport(spawnPoint)));
+        } catch (Exception ignored) {}
     }
 
     public void addPlayer(Player player){
@@ -42,14 +47,6 @@ public class Team {
     }
 
     public boolean hasFree(){
-        if (players.size() < maxPlayers) return true;
-        else return false;
-    }
-
-    /*
-     *  Never used
-     */
-    public void tpToSpawn(Player player){
-        player.teleport(spawnPoint);
+        return players.size() < maxPlayers;
     }
 }

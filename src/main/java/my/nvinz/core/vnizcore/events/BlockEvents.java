@@ -3,8 +3,6 @@ package my.nvinz.core.vnizcore.events;
 import my.nvinz.core.vnizcore.VnizCore;
 import my.nvinz.core.vnizcore.game.Stage;
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,6 +16,7 @@ public class BlockEvents implements Listener {
         plugin = pl;
     }
 
+    // TODO only placed blocks
     @EventHandler
     public void onBreak(BlockBreakEvent event){
         if (plugin.players.contains(event.getPlayer())) {
@@ -26,8 +25,8 @@ public class BlockEvents implements Listener {
                     event.setCancelled(true);
                 }
                 if (event.getBlock().getBlockData() instanceof org.bukkit.block.data.type.Bed) {
-                    plugin.teams_beds.forEach((team, bed) -> {
-                        if (event.getBlock().getType().equals(bed)) {
+                    plugin.teams.forEach(team -> {
+                        if (event.getBlock().getType().equals(team.bedMaterial)) {
                             if (team.bedStanding) {
                                 plugin.playSound(Sound.ENTITY_ENDER_DRAGON_GROWL);
                                 plugin.makeAnnouncement(ChatColor.GRAY + "Кровать команды " + team.chatColor + team.teamName + ChatColor.GRAY + " разрушена.");

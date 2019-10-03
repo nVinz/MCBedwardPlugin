@@ -6,12 +6,12 @@
 
     <groupId>my.nvinz.core</groupId>
     <artifactId>VnizCore</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.5-DEV</version>
     <packaging>jar</packaging>
 
     <name>VnizCore</name>
 
-    <description>Core Server Plugin</description>
+    <description>BedWars minigame Plugin</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

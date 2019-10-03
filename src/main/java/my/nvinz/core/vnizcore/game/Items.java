@@ -6,19 +6,17 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Items {
 
-    VnizCore plugin;
+    private VnizCore plugin;
     public Map<String, ItemStack> items;
     public Items(VnizCore pl){
         plugin = pl;
         items = new HashMap<>();
-        Map<String, Object> items_cfg = plugin.getConfig().getConfigurationSection("items").getValues(false);
+        Map<String, Object> items_cfg = Objects.requireNonNull(
+                plugin.getConfig().getConfigurationSection("items")).getValues(false);
         items_cfg.forEach( (item_cfg, obj) -> {
             addItem(item_cfg,
                     plugin.getConfig().getString("items."+item_cfg+".name"),
@@ -27,7 +25,8 @@ public class Items {
     }
 
     public void addItem(String configName, String displayName, List<String> lore){
-        String itemName = plugin.getConfig().getString("items."+configName+".item-id").toUpperCase();
+        String itemName = Objects.requireNonNull(
+                plugin.getConfig().getString("items." + configName + ".item-id")).toUpperCase();
         ItemStack itemStack = new ItemStack(Material.getMaterial(itemName), 1);{
             ItemMeta itemMeta = itemStack.getItemMeta();
             itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));

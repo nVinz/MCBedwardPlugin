@@ -8,21 +8,20 @@ import org.bukkit.World;
 
 public class TeamBuilder {
 
-    String teamColor;
-    String teamName;
-    ChatColor chatColor;
-    Location spawnPoint;
-    int maxPlayers;
-    Material bedMaterial;
+    private String teamColor;
+    private String teamName;
+    private ChatColor chatColor;
+    private Location spawnPoint;
+    private int maxPlayers;
+    private Material bedMaterial;
 
     private VnizCore plugin;
     public TeamBuilder(VnizCore pl){ plugin = pl; }
 
     public void buildTeam(){
         try {
-            Team team = new Team(teamColor, teamName, chatColor, spawnPoint, bedMaterial, maxPlayers);
+            Team team = new Team(plugin, teamColor, teamName, chatColor, spawnPoint, bedMaterial, maxPlayers);
             plugin.teams.add(team);
-            plugin.teams_beds.put(team, bedMaterial);
             plugin.variables.allowedMaterials.add(bedMaterial);
         } catch (Exception e) {
             plugin.getServer().getConsoleSender().sendMessage("Error building team: " + e);

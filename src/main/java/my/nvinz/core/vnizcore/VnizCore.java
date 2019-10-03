@@ -28,17 +28,21 @@ public final class VnizCore extends JavaPlugin {
     public Variables variables;
     public Items items;
     public ResourceSpawn resourceSpawn;
-    public PrepareMap prepareMap;
 
-    public List<Team> teams = new ArrayList<>();
-    public List<Player> players = new ArrayList<>();
-    public Map<String, Inventory> inventories = new HashMap<>();
-    public Map<Player, Team> players_and_teams = new HashMap<>();
-    public Map<Team, Material> teams_beds = new HashMap<>();
-    public List<Resource> resources = new ArrayList<>();
+    public List<Team> teams ;
+    public List<Player> players;
+    public Map<String, Inventory> inventories;
+    public Map<Player, Team> players_and_teams;
+    public List<Resource> resources;
 
     @Override
     public void onEnable() {
+        teams = new ArrayList<>();
+        players = new ArrayList<>();
+        inventories = new HashMap<>();
+        players_and_teams = new HashMap<>();
+        resources = new ArrayList<>();
+
         variables =  new Variables(this);
         items = new Items(this);
 
@@ -51,7 +55,11 @@ public final class VnizCore extends JavaPlugin {
 
         resourceSpawn = new ResourceSpawn(this);
 
-        prepareMap = new PrepareMap(this);
+        PrepareMap prepareMap = new PrepareMap(this);
+        prepareMap.clearDrops(Objects.requireNonNull(
+                getServer().getWorld(
+                        Objects.requireNonNull(
+                                getConfig().getString("arena.world")))));
     }
 
     @Override
@@ -69,7 +77,7 @@ public final class VnizCore extends JavaPlugin {
      *  blockEvents
      *  gameEvents
      */
-    void registerEvents(VnizCore plugin){
+    private void registerEvents(VnizCore plugin){
         try {
              ChatEvents chatEvents = new ChatEvents(plugin);
              BlockEvents blockEvents = new BlockEvents(plugin);
@@ -88,9 +96,10 @@ public final class VnizCore extends JavaPlugin {
      *  Set commands executor
      *  plugin.yml - commands
      */
-    void setCommandsExecutors(VnizCore plugin){
+    private void setCommandsExecutors(VnizCore plugin){
         try {
-            plugin.getCommand("vniz").setExecutor(new Commands(plugin));
+            Objects.requireNonNull(
+                    plugin.getCommand("vniz")).setExecutor(new Commands(plugin));
         } catch (Exception e) {
             plugin.getServer().getConsoleSender().sendMessage("Error setting commands executors: " + e.getMessage());
         }
@@ -101,11 +110,22 @@ public final class VnizCore extends JavaPlugin {
      *  Read config file
      *  config.yml
      *  TODO create if not exists
+     *  TODO reload on command
      */
-    void loadConfig(VnizCore plugin){
+    private void loadConfig(VnizCore plugin){
         try {
             plugin.getConfig().options().copyDefaults(true);
             //plugin.saveConfig();
+        } catch (Exception e) {
+            plugin.getServer().getConsoleSender().sendMessage("Error setup config: " + e.getMessage());
+        }
+    }
+
+    public void reloadConfig(VnizCore plugin){
+        try {
+            plugin.getConfig().options().copyDefaults(true);
+            restart();
+            onEnable();
         } catch (Exception e) {
             plugin.getServer().getConsoleSender().sendMessage("Error setup config: " + e.getMessage());
         }
@@ -116,13 +136,15 @@ public final class VnizCore extends JavaPlugin {
      *  config.yml
      *  teams.*
      */
-    void parseTeams(VnizCore plugin){
+    private void parseTeams(VnizCore plugin){
         try {
-            Map<String, Object> teams_cfg = plugin.getConfig().getConfigurationSection("teams").getValues(false);
+            Map<String, Object> teams_cfg = Objects.requireNonNull(
+                    plugin.getConfig().getConfigurationSection("teams")).getValues(false);
             teams_cfg.forEach((team_cfg, obj) -> {
 
                 plugin.getServer().getConsoleSender().sendMessage("Building team with parameters: ");
-                World world = plugin.getServer().getWorld(plugin.getConfig().getString("arena.world"));
+                World world = plugin.getServer().getWorld(Objects.requireNonNull(
+                        plugin.getConfig().getString("arena.world")));
 
                 TeamBuilder teamBuilder = new TeamBuilder(plugin);
                 teamBuilder.setTeamColor(team_cfg)
@@ -130,11 +152,11 @@ public final class VnizCore extends JavaPlugin {
                         .setChatColor(team_cfg)
                         .setSpawnPoint(plugin.getConfig().getString("teams." + team_cfg + ".spawn"), world)
                         .setBedMaterial(team_cfg)
-                        .setMaxPlayers(plugin.getConfig().getInt("teams." + team_cfg + ".max-players"));
+                        .setMaxPlayers(plugin.getConfig().getInt("teams." + team_cfg + ".max-players"))
+                .buildTeam();
 
                 // TODO Check if bed is staying
                 // TODO add yaw & pitch
-                teamBuilder.buildTeam();
             });
         } catch (Exception e) {
             plugin.getServer().getConsoleSender().sendMessage("Error parsing team: " + e.getMessage());
@@ -146,17 +168,17 @@ public final class VnizCore extends JavaPlugin {
      *  config.yml
      *  resources.*
      */
-    void parseResources(VnizCore plugin){
+    private void parseResources(VnizCore plugin){
         try{
-            Map<String, Object> resources_cfg = plugin.getConfig().getConfigurationSection("resources").getValues(false);
+            Map<String, Object> resources_cfg = Objects.requireNonNull(
+                    plugin.getConfig().getConfigurationSection("resources")).getValues(false);
             resources_cfg.forEach((resource_cfg, obj) -> {
                 plugin.getServer().getConsoleSender().sendMessage("Building material with parameters: ");
-                World world = plugin.getServer().getWorld(plugin.getConfig().getString("arena.world"));
+                World world = plugin.getServer().getWorld(Objects.requireNonNull(
+                        plugin.getConfig().getString("arena.world")));
                 List<Location> locations = new ArrayList<>();
                 List<String> locations_cfg = plugin.getConfig().getStringList("resources."+resource_cfg+".spawns");
-                locations_cfg.forEach(location -> {
-                    locations.add(setupLocation(world, location));
-                });
+                locations_cfg.forEach(location -> locations.add(setupLocation(world, location)));
 
                 ResourceBuilder resourceBuilder = new ResourceBuilder(this);
                 resourceBuilder
@@ -164,8 +186,8 @@ public final class VnizCore extends JavaPlugin {
                     .setMaterial(setupMaterial(resource_cfg.toUpperCase()))
                     .setBlock(setupBlock(resource_cfg.toUpperCase()))
                     .setTimer(plugin.getConfig().getInt("resources." + resource_cfg + ".timer"))
-                    .setLocations(locations);
-                resourceBuilder.buildResource();
+                    .setLocations(locations)
+                .buildResource();
             });
         } catch (Exception e) {
             plugin.getServer().getConsoleSender().sendMessage("Error parsing material: " + e.getMessage());
@@ -175,7 +197,7 @@ public final class VnizCore extends JavaPlugin {
     /*
      *  Setup Stage
      */
-    void setupStage(VnizCore plugin){
+    private void setupStage(VnizCore plugin){
         stage = new Stage(plugin);
         stageStatus = Stage.Status.LOBBY;
     }
@@ -199,16 +221,12 @@ public final class VnizCore extends JavaPlugin {
      *  @param message {@code String}
      */
     public void makeTeamAnnouncement(Team team, String message){
-        team.players.forEach(player -> {
-            player.sendMessage(message);
-        });
+        team.players.forEach(player -> player.sendMessage(message));
     }
 
     // TODO JavaDoc
     public void playSound(Sound sound){
-        players.forEach(player -> {
-            player.playSound(player.getLocation(), sound, 5, 1);
-        });
+        players.forEach(player -> player.playSound(player.getLocation(), sound, 5, 1));
     }
 
     // TODO JavaDoc
@@ -250,7 +268,7 @@ public final class VnizCore extends JavaPlugin {
         }
     }
 
-    public void savePlayerInventory(Player player){
+    private void savePlayerInventory(Player player){
         /*Inventory inventory = player.getInventory();*/
         inventories.put(player.getName(), player.getInventory());
         player.saveData();
@@ -284,7 +302,7 @@ public final class VnizCore extends JavaPlugin {
         try {
             players_and_teams.get(player).removePlayer(player);
             players_and_teams.remove(player, players_and_teams.get(player));
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException ignored) {}
     }
 
     /**
@@ -294,7 +312,7 @@ public final class VnizCore extends JavaPlugin {
      *  [0] X, [1] Y, [2] Z
      *  TODO add yaw & pitch
      */
-    public double[] parseLocation(String location){
+    private double[] parseLocation(String location){
         double[] coords = {0.0, 0.0, 0.0};
         StringTokenizer st = new StringTokenizer(location.replace(',', ' '));
         while (st.hasMoreTokens()) {
@@ -315,8 +333,7 @@ public final class VnizCore extends JavaPlugin {
      */
     public Location setupLocation(World world, String position) {
         double[] coords = parseLocation(position);
-        Location location = new Location(world, coords[0], coords[1], coords[2]);
-        return location;
+        return new Location(world, coords[0], coords[1], coords[2]);
     }
 
     /**
@@ -326,7 +343,7 @@ public final class VnizCore extends JavaPlugin {
      *  @return Material
      *  TODO test lapis
      */
-    Material setupMaterial(String name){
+    private Material setupMaterial(String name){
         List<String> variants = new ArrayList<String>(){
             {
                 add("");
@@ -348,7 +365,7 @@ public final class VnizCore extends JavaPlugin {
      *  @return Material
      *  TODO test lapis
      */
-    Material setupBlock(String name){
+    private Material setupBlock(String name){
         List<String> variants = new ArrayList<String>(){
             {
                 add("_BLOCK");
@@ -371,7 +388,7 @@ public final class VnizCore extends JavaPlugin {
      *      delete it from List<Team> teams
      *      make announce
      */
-    public void isTeamLost(){
+    private void isTeamLost(){
         teams.forEach(team-> {
             if (team.players.isEmpty()){
                 playSound(Sound.ENTITY_BLAZE_DEATH);
@@ -392,7 +409,7 @@ public final class VnizCore extends JavaPlugin {
      *      make announce
      * TODO add sound effect
      */
-    public void checkWinner(){
+    private void checkWinner(){
         if (teams.size() == 1){
             stage.inAftergame();
             makeAnnouncement(ChatColor.GREEN+"Победила команда " + teams.get(0).chatColor + teams.get(0).teamName + ChatColor.GREEN+"!");
@@ -418,6 +435,14 @@ public final class VnizCore extends JavaPlugin {
                 removePlayerFromTeam(player);
                 isTeamLost();
             }
-        } catch (Exception e) {}
+        } catch (Exception ignored) {}
+    }
+
+    public void restart(){
+        players = new ArrayList<>();
+        inventories = new HashMap<>();
+        players_and_teams = new HashMap<>();
+
+        stageStatus = Stage.Status.LOBBY;
     }
 }

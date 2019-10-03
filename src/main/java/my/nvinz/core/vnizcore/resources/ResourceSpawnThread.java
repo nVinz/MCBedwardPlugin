@@ -5,22 +5,19 @@ import my.nvinz.core.vnizcore.game.Stage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ResourceSpawnThread extends Thread {
 
-    private String name;
     private Material material;
     private List<Location> locations;
     private int timer;
     private VnizCore plugin;
     public ResourceSpawnThread(VnizCore pl, Resource resource){
         plugin = pl;
-        name = resource.material.toString();
         material = resource.material;
         locations = resource.locations;
         timer = resource.timer;
@@ -29,9 +26,7 @@ public class ResourceSpawnThread extends Thread {
     public void run(){
         try {
             while (plugin.stageStatus.equals(Stage.Status.INGAME)) {
-                locations.forEach(location -> {
-                    spawnItem(location);
-                });
+                locations.forEach(this::spawnItem);
                 Thread.sleep(1000 * timer);
             }
         } catch (InterruptedException e) {
@@ -41,12 +36,8 @@ public class ResourceSpawnThread extends Thread {
 
     private void spawnItem(Location location){
         try {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    location.getWorld().dropItem(location, new ItemStack(material));
-                }
-            });
-        } catch (Exception e) {}
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Objects.requireNonNull(
+                    location.getWorld()).dropItem(location, new ItemStack(material)));
+        } catch (Exception ignored) {}
     }
 }
