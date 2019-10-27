@@ -1,15 +1,14 @@
 package my.nvinz.core.vnizcore.events;
 
 import my.nvinz.core.vnizcore.VnizCore;
-import my.nvinz.core.vnizcore.game.Stage;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.PlayerInventory;
 
-import java.util.Map;
+import java.lang.reflect.Field;
 
 public class Commands implements CommandExecutor {
 
@@ -64,6 +63,7 @@ public class Commands implements CommandExecutor {
                             player.sendMessage(ChatColor.RED + "Вы не находитесь в лобби.");
                         }
                     }
+                    plugin.tab.tabUpdateAllPlayers();
                     break;
                 case "teams":
                     plugin.teams.forEach(team -> {
@@ -80,21 +80,40 @@ public class Commands implements CommandExecutor {
                     plugin.leavePlayer(player);
                     break;
                 case "test":
-                    plugin.stageStatus = Stage.Status.AFTERGAME;
-                    PlayerInventory inventory = player.getInventory();
-                    inventory.clear();
-                    inventory.setItem(4, plugin.items.items.get("select-team-item"));
+
+                    setHeaderAndFooter(player, "1", "2");
+
                     break;
+
                 case "reload":
                     plugin.reloadConfig(plugin);
                     player.sendMessage(ChatColor.GREEN+"Конфиг перезагружен.");
                     break;
             }
         }
-
-
-
         return true;
     }
 
+    public void setHeaderAndFooter(Player player, String header, String footer) {
+        try {
+            Object headerJson = getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\":\"" + ChatColor.GOLD + "Welcome to the Cakeland server" + "\"}");
+            Object footerJson = getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\":\"Hi\",\"color\":\"dark_aqua\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[{\"text\":\"Our awesome server!\"}]}}}");
+            Object packet = getNMSClass("PacketPlayOutPlayerListHeaderFooter").getConstructor(getNMSClass("IChatBaseComponent")).newInstance(headerJson);
+
+            Field footerField = packet.getClass().getDeclaredField("b");
+            footerField.setAccessible(true);
+            footerField.set(packet, footerJson);
+
+            Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
+            Object playerConnection = entityPlayer.getClass().getField("playerConnection").get(entityPlayer);
+
+            playerConnection.getClass().getMethod("sendPacket", getNMSClass("Packet")).invoke(playerConnection, packet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Class<?> getNMSClass(String name) throws ClassNotFoundException {
+        return Class.forName("net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3] + "." + name);
+    }
 }

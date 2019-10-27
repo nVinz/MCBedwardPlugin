@@ -1,5 +1,6 @@
 package my.nvinz.core.vnizcore;
 
+import my.nvinz.core.vnizcore.UI.Tab;
 import my.nvinz.core.vnizcore.events.BlockEvents;
 import my.nvinz.core.vnizcore.events.ChatEvents;
 import my.nvinz.core.vnizcore.events.Commands;
@@ -28,6 +29,7 @@ public final class VnizCore extends JavaPlugin {
     public Variables variables;
     public Items items;
     public ResourceSpawn resourceSpawn;
+    public Tab tab;
 
     public List<Team> teams ;
     public List<Player> players;
@@ -42,6 +44,7 @@ public final class VnizCore extends JavaPlugin {
         inventories = new HashMap<>();
         players_and_teams = new HashMap<>();
         resources = new ArrayList<>();
+        tab = new Tab(this);
 
         variables =  new Variables(this);
         items = new Items(this);
@@ -232,6 +235,7 @@ public final class VnizCore extends JavaPlugin {
     // TODO JavaDoc
     public void joinPlayer(Player player) {
         players.add(player);
+        tab.tabUpdateAllPlayers();
         savePlayerInventory(player);
         player.teleport(variables.lobbySpawnPoint);
         int currPlayers = players.size();
@@ -248,6 +252,7 @@ public final class VnizCore extends JavaPlugin {
     // TODO JavaDoc
     public void leavePlayer(Player player){
         players.remove(player);
+        tab.tabRestorePlayers(player);
         restorePlayerInventory(player);
         player.teleport(variables.lobbyExitPoint);
         player.sendMessage(ChatColor.GRAY + "Вы покинули игру");
@@ -307,9 +312,8 @@ public final class VnizCore extends JavaPlugin {
 
     /**
      *  Build double[]
-     *  @param location {@code String}
-     *  @return double[]
-     *  [0] X, [1] Y, [2] Z
+     *  @param location Location
+     *  @return double[] [0] X, [1] Y, [2] Z
      *  TODO add yaw & pitch
      */
     private double[] parseLocation(String location){
@@ -411,14 +415,14 @@ public final class VnizCore extends JavaPlugin {
      */
     private void checkWinner(){
         if (teams.size() == 1){
-            stage.inAftergame();
             makeAnnouncement(ChatColor.GREEN+"Победила команда " + teams.get(0).chatColor + teams.get(0).teamName + ChatColor.GREEN+"!");
+            stage.inAftergame();
         }
     }
 
     /**
      *  When player gets critical damage in Event
-     *  @param player {@code Player}
+     *  @param player Player getting critical damage
      *  TODO add sound effect
      */
     public void killAndTp(Player player){

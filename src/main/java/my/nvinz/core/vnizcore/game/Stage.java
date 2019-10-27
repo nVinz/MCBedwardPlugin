@@ -1,9 +1,12 @@
 package my.nvinz.core.vnizcore.game;
 
 import my.nvinz.core.vnizcore.VnizCore;
+import my.nvinz.core.vnizcore.teams.Team;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 
 public class Stage{
 
@@ -59,10 +62,16 @@ public class Stage{
         plugin.stageStatus = Status.INGAME;
 
 
+        plugin.getServer().getScheduler().runTask(plugin, () -> {
+            for (Player player : plugin.players) {
+                player.teleport(plugin.players_and_teams.get(player).spawnPoint);
+            }
+        });
+
         plugin.players_and_teams.forEach( (player, team) -> {
             player.setGameMode(GameMode.SURVIVAL);
             player.getInventory().clear();
-            team.tpAllToSpawn();
+            //team.tpAllToSpawn();
         });
     }
 
