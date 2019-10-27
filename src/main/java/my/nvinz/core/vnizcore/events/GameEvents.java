@@ -2,7 +2,12 @@ package my.nvinz.core.vnizcore.events;
 
 import my.nvinz.core.vnizcore.VnizCore;
 import my.nvinz.core.vnizcore.game.Stage;
+import net.minecraft.server.v1_13_R2.*;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,7 +15,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class GameEvents implements Listener {
@@ -88,6 +97,76 @@ public class GameEvents implements Listener {
             }
         }
     }
+
+   /* @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
+
+        final Player player = event.getPlayer();
+        final int visibleDistance = plugin.getServer().getViewDistance() * 16;
+
+        // Fix the visibility issue one tick later
+        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                // Refresh nearby clients
+                updateEntities(getPlayersWithin(player, visibleDistance));
+
+                System.out.println("Applying fix ... " + visibleDistance);
+            }
+        }, 15);
+    }
+
+
+    public void updateEntities(List<Player> observers) {
+
+        // Refresh every single player
+        for (Player player : observers) {
+            updateEntity(player, observers);
+        }
+    }
+
+   /* @SuppressWarnings("unchecked")
+    public void updateEntity(Entity entity, List<Player> observers) {
+
+        World world = entity.getWorld();
+        WorldServer worldServer = ((CraftWorld) world).getHandle();
+
+        EntityTracker tracker = worldServer.tracker;
+        EntityTrackerEntry entry = tracker.trackedEntities
+                .get(entity.getEntityId());
+
+        List<EntityPlayer> nmsPlayers = getNmsPlayers(observers);
+
+        // Force Minecraft to resend packets to the affected clients
+        entry.trackedPlayers.removeAll(nmsPlayers);
+        //entry.scanPlayers(nmsPlayers);
+    }
+
+    private List<EntityPlayer> getNmsPlayers(List<Player> players) {
+        List<EntityPlayer> nsmPlayers = new ArrayList<EntityPlayer>();
+
+        for (Player bukkitPlayer : players) {
+            CraftPlayer craftPlayer = (CraftPlayer) bukkitPlayer;
+            nsmPlayers.add(craftPlayer.getHandle());
+        }
+
+        return nsmPlayers;
+    }
+
+    private List<Player> getPlayersWithin(Player player, int distance) {
+        List<Player> res = new ArrayList<Player>();
+        int d2 = distance * distance;
+
+        for (Player p : plugin.getServer().getOnlinePlayers()) {
+            if (p.getWorld() == player.getWorld()
+                    && p.getLocation().distanceSquared(player.getLocation()) <= d2) {
+                res.add(p);
+            }
+        }
+
+        return res;
+    }*/
+
 
     // TODO Disable craft
 }
