@@ -49,7 +49,7 @@ public class ChatEvents implements Listener {
             event.getPlayer().getInventory().addItem(
                     (plugin.inventories.get(event.getPlayer().getName()).getContents()));
         }
-        plugin.tab.tabUpdateAllPlayers();
+        //plugin.tab.tabUpdateAllPlayers();
     }
 
     // TODO add sound effect
@@ -59,6 +59,6 @@ public class ChatEvents implements Listener {
             plugin.inventories.put(event.getPlayer().getName(), event.getPlayer().getInventory());
             plugin.leavePlayer(event.getPlayer());
         }
-        plugin.tab.tabUpdateAllPlayers();
+        ///plugin.tab.tabUpdateAllPlayers();
     }
 }

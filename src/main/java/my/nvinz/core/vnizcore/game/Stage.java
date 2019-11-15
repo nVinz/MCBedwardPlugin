@@ -4,6 +4,7 @@ import my.nvinz.core.vnizcore.VnizCore;
 import my.nvinz.core.vnizcore.teams.Team;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
 
@@ -60,52 +61,24 @@ public class Stage{
         plugin.resourceSpawn.runThreads();
         plugin.stageStatus = Status.INGAME;
 
-        /*Thread thread = new Thread(() -> {
-            try {
-                for (Player player : plugin.players) {
-                    player.teleport(plugin.players_and_teams.get(player).spawnPoint);
-                    player.showPlayer(plugin, player);
-                //for (Team team : plugin.teams) {
-                //    team.tpAllToSpawn();
-                    Thread.sleep(1000);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-        thread.start();*/
-
-        //plugin.getServer().getScheduler().runTask(plugin, () -> {
-        //});
-
-
-        /*plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+        new BukkitRunnable() {
+            @Override
             public void run() {
-                for (Player player : plugin.players) {
-                   player.teleport(plugin.players_and_teams.get(player).spawnPoint);
-                //for (Team team : plugin.teams) {
-                //    team.tpAllToSpawn();
+                try {
+                    for (Team team : plugin.teams) {
+                        for (Player player : team.players) {
+                            player.teleport(team.spawnPoint);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                return;
             }
-        }, 0, 20);*/
+        }.runTaskLater(plugin, 20);
 
-
-
-        try {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
-                plugin.players_and_teams.forEach( (player, team) -> {
-                    player.setGameMode(GameMode.SURVIVAL);
-                    player.getInventory().clear();
-                    team.tpAllToSpawn();
-                    plugin.getServer().createWorld(new WorldCreator(Objects.requireNonNull(
-                            plugin.getConfig().getString("arena.world"))));
-
-
-                                team.spawnPoint.getWorld().loadChunk(team.spawnPoint.getChunk());
-
-            }));
-        } catch (Exception ignored) {}
+        for (Player p : plugin.players) {
+            p.showPlayer(plugin, p);
+        }
     }
 
     public void inAftergame(){

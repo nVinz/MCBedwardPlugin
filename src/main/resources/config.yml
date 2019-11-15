@@ -56,3 +56,10 @@ lobby:
 exit:
   world: world
   spawn: -226.5, 64, -76.5
+#################################################
+maps:
+  1:
+    name: new_map_1
+    world: map1
+    schematic-name: 1
+    schematic-position: 0.0, 0.0, 0.0

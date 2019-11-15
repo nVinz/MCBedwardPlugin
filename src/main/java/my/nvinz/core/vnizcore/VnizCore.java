@@ -29,7 +29,7 @@ public final class VnizCore extends JavaPlugin {
     public Variables variables;
     public Items items;
     public ResourceSpawn resourceSpawn;
-    public Tab tab;
+    //public Tab tab;
 
     public List<Team> teams ;
     public List<Player> players;
@@ -44,7 +44,7 @@ public final class VnizCore extends JavaPlugin {
         inventories = new HashMap<>();
         players_and_teams = new HashMap<>();
         resources = new ArrayList<>();
-        tab = new Tab(this);
+        //tab = new Tab(this);
 
         variables =  new Variables(this);
         items = new Items(this);
@@ -146,14 +146,12 @@ public final class VnizCore extends JavaPlugin {
             teams_cfg.forEach((team_cfg, obj) -> {
 
                 plugin.getServer().getConsoleSender().sendMessage("Building team with parameters: ");
-                World world = plugin.getServer().getWorld(Objects.requireNonNull(
-                        plugin.getConfig().getString("arena.world")));
 
                 TeamBuilder teamBuilder = new TeamBuilder(plugin);
                 teamBuilder.setTeamColor(team_cfg)
                         .setTeamName(plugin.getConfig().getString("teams." + team_cfg + ".name"))
                         .setChatColor(team_cfg)
-                        .setSpawnPoint(plugin.getConfig().getString("teams." + team_cfg + ".spawn"), world)
+                        .setSpawnPoint(plugin.getConfig().getString("teams." + team_cfg + ".spawn"), variables.arenaWorld)
                         .setBedMaterial(team_cfg)
                         .setMaxPlayers(plugin.getConfig().getInt("teams." + team_cfg + ".max-players"))
                 .buildTeam();
@@ -235,7 +233,7 @@ public final class VnizCore extends JavaPlugin {
     // TODO JavaDoc
     public void joinPlayer(Player player) {
         players.add(player);
-        tab.tabUpdateAllPlayers();
+        //tab.tabUpdateAllPlayers();
         savePlayerInventory(player);
         player.teleport(variables.lobbySpawnPoint);
         int currPlayers = players.size();
@@ -252,7 +250,7 @@ public final class VnizCore extends JavaPlugin {
     // TODO JavaDoc
     public void leavePlayer(Player player){
         players.remove(player);
-        tab.tabRestorePlayers(player);
+        //tab.tabRestorePlayers(player);
         restorePlayerInventory(player);
         player.teleport(variables.lobbyExitPoint);
         player.sendMessage(ChatColor.GRAY + "Вы покинули игру");
@@ -386,7 +384,7 @@ public final class VnizCore extends JavaPlugin {
         return null;
     }
 
-    /*
+    /**
      *  Checks is any team has no players
      *  If true
      *      delete it from List<Team> teams
@@ -406,7 +404,7 @@ public final class VnizCore extends JavaPlugin {
         checkWinner();
     }
 
-    /*
+    /**
      *  Checks if List<Team> teams only one team left
      *  If true
      *      change Stage status
@@ -446,7 +444,8 @@ public final class VnizCore extends JavaPlugin {
         players = new ArrayList<>();
         inventories = new HashMap<>();
         players_and_teams = new HashMap<>();
-
+        teams.forEach(Team::removeAll);
+        players.forEach(player -> player.teleport(variables.lobbySpawnPoint));
         stageStatus = Stage.Status.LOBBY;
     }
 }

@@ -46,6 +46,10 @@ public class Team {
         players.remove(player);
     }
 
+    public void removeAll() {
+        players.clear();
+    }
+
     public boolean hasFree(){
         return players.size() < maxPlayers;
     }

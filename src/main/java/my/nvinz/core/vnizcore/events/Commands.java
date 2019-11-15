@@ -1,6 +1,7 @@
 package my.nvinz.core.vnizcore.events;
 
 import my.nvinz.core.vnizcore.VnizCore;
+import my.nvinz.core.vnizcore.map.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -8,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 
 public class Commands implements CommandExecutor {
@@ -63,7 +65,7 @@ public class Commands implements CommandExecutor {
                             player.sendMessage(ChatColor.RED + "Вы не находитесь в лобби.");
                         }
                     }
-                    plugin.tab.tabUpdateAllPlayers();
+                    //plugin.tab.tabUpdateAllPlayers();
                     break;
                 case "teams":
                     plugin.teams.forEach(team -> {
@@ -85,6 +87,15 @@ public class Commands implements CommandExecutor {
 
                     break;
 
+                case "map":
+                    try {
+                        Map map = new Map(plugin);
+                        map.map();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    break;
                 case "reload":
                     plugin.reloadConfig(plugin);
                     player.sendMessage(ChatColor.GREEN+"Конфиг перезагружен.");
